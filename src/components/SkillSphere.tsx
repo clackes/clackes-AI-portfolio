@@ -275,9 +275,12 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
         const line = wire[li];
         const ring = line.closed ? line.pts.concat(line.pts[0]) : line.pts;
         // Array + join instead of repeated string += (cheaper for V8 at this
-        // point count), and integer coordinates — sub-pixel precision on a
-        // viewBox this size doesn't read as smoother, just costs more per
-        // frame to format.
+        // point count). Coordinates keep sub-pixel precision (1 decimal) —
+        // rounding to whole viewBox units made points visibly snap between
+        // integer positions frame to frame during rotation (the SVG can
+        // render up to 640px for a 200-unit viewBox, so 1 unit is several
+        // physical pixels), which read as the lines "breaking" into jittery
+        // segments rather than sliding smoothly.
         const frontParts: string[] = [];
         const backParts: string[] = [];
         let side: 0 | 1 | -1 = 0; // -1 back, 1 front, 0 uninitialised
@@ -287,8 +290,8 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
           const rz = -bp.x * sinA + bp.z * cosA;
           const y2 = bp.y * cosT - rz * sinT;
           const z2 = bp.y * sinT + rz * cosT;
-          const sx = Math.round(100 + rx * 99);
-          const sy = Math.round(100 + y2 * 99);
+          const sx = (100 + rx * 99).toFixed(1);
+          const sy = (100 + y2 * 99).toFixed(1);
           const s: 1 | -1 = z2 >= 0 ? 1 : -1;
           const parts = s === 1 ? frontParts : backParts;
           parts.push(`${s !== side ? 'M' : 'L'}${sx} ${sy}`);
