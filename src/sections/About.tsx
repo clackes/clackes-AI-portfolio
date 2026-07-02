@@ -170,21 +170,25 @@ function PrinciplesCard({ className = '' }: { className?: string }) {
 
 // ── Mobile-only: each principle as its own small card, side by side ──────────
 // Same solid bg-card as the desktop deck's individual cards (the gradient
-// belongs to the outer deck container, not each card), and the middle one
-// is taller — same "raised centre card" shape as the desktop fan.
+// belongs to the outer deck container, not each card), same per-position text
+// alignment as the desktop DeckCard variants (left/centre/right), and the
+// middle one is taller — same "raised centre card" shape as the desktop fan.
 function PrincipleMiniCard({
   pr,
   raised = false,
+  align = 'left',
   className = '',
 }: {
   pr: (typeof principles)[number];
   raised?: boolean;
+  align?: 'left' | 'center' | 'right';
   className?: string;
 }) {
   const t = useT();
+  const alignClass = align === 'center' ? 'text-center' : align === 'right' ? 'text-right' : 'text-left';
   return (
     <div
-      className={`rounded-xl border border-card-border bg-card p-3 backdrop-blur-md ${raised ? 'min-h-[132px]' : 'min-h-[112px]'} ${className}`}
+      className={`rounded-xl border border-card-border bg-card p-3 backdrop-blur-md ${alignClass} ${raised ? 'min-h-[132px]' : 'min-h-[112px]'} ${className}`}
     >
       <h3 className="text-[10px] font-bold uppercase leading-tight text-foreground">{t(`about.principles.${pr.n}.title`)}</h3>
       <p className="mt-1 text-[9px] leading-tight text-muted opacity-70">{t(`about.principles.${pr.n}.body`)}</p>
@@ -559,7 +563,13 @@ export function About() {
             </div>
             <div className="flex items-end gap-3">
               {principles.map((pr, i) => (
-                <PrincipleMiniCard key={pr.n} pr={pr} raised={i === 1} className="flex-1" />
+                <PrincipleMiniCard
+                  key={pr.n}
+                  pr={pr}
+                  raised={i === 1}
+                  align={i === 0 ? 'left' : i === 1 ? 'center' : 'right'}
+                  className="flex-1"
+                />
               ))}
             </div>
           </div>

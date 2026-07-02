@@ -333,19 +333,19 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
         style={{ maxWidth: 640, maxHeight: 640, aspectRatio: '1' }}
       >
         <g fill="none">
-          {/* rear of the mesh — faint but visible */}
-          <g stroke="rgba(59,130,246,0.06)" strokeWidth="0.35">
+          {/* rear of the mesh — dimmer than the front, but clearly visible */}
+          <g stroke="rgba(96,165,250,0.22)" strokeWidth="0.45">
             {wire.map((_, i) => (
               <path key={`b${i}`} ref={(n) => (wireBackRefs.current[i] = n)} />
             ))}
           </g>
           {/* front of the mesh */}
-          <g stroke="rgba(59,130,246,0.16)" strokeWidth="0.4">
+          <g stroke="rgba(96,165,250,0.45)" strokeWidth="0.55">
             {wire.map((_, i) => (
               <path key={`f${i}`} ref={(n) => (wireFrontRefs.current[i] = n)} />
             ))}
           </g>
-          <circle cx="100" cy="100" r="99" stroke="rgba(59,130,246,0.14)" strokeWidth="0.4" />
+          <circle cx="100" cy="100" r="99" stroke="rgba(96,165,250,0.4)" strokeWidth="0.55" />
         </g>
       </svg>
 
