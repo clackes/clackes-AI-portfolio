@@ -52,10 +52,10 @@ function buildWireframe(meridians: number, parallels: number, steps = 96): WireL
   }
   return lines;
 }
-const AUTO_SPIN = 0.0032; // idle rotation speed around Y (rad/frame)
+const AUTO_SPIN = 0.0014; // idle rotation speed around Y (rad/frame)
 // Extra rotation added per pixel scrolled, on top of the constant idle spin —
 // scrolling down spins it further, scrolling up spins it back.
-const SCROLL_SPIN = 0.0012;
+const SCROLL_SPIN = 0.0005;
 const HOVER_SCALE = 1.45; // icon grows this much on hover
 
 // easeOutCubic — makes the assembly feel fast at first, gentle on arrival.
