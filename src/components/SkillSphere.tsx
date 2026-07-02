@@ -87,9 +87,12 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
   }
   // Redrawn every frame (see below) — the mismatch between smooth per-frame
   // icon motion and a skipped-frame wireframe was the actual source of the
-  // "constant lag" feeling, not raw throughput. Lighter mesh than the
-  // absolute densest version so full-rate redraw stays cheap.
-  const wire = useMemo(() => buildWireframe(16, 8, 24), []);
+  // "constant lag" feeling, not raw throughput. Too few points per line
+  // (steps) made each curve look faceted/segmented once the mesh was bright
+  // and the rotation slow enough to actually see the joints — measured no
+  // real per-frame cost difference going from 24 to 64 steps, so there was
+  // headroom to fix that without touching line count (16x8, unchanged).
+  const wire = useMemo(() => buildWireframe(16, 8, 64), []);
   // Two <path>s per line (front + back arcs) — kept stable so the render loop
   // can rewrite their `d` each frame without React re-rendering.
   const wireFrontRefs = useRef<(SVGPathElement | null)[]>([]);
