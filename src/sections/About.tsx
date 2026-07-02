@@ -522,6 +522,7 @@ function Craft({ className = '' }: { className?: string }) {
 }
 
 export function About() {
+  const t = useT();
   return (
     <section id="about" className="mx-auto max-w-5xl px-4 pb-32 pt-0" style={{ scrollMarginTop: 120 }}>
       <Reveal>
@@ -535,6 +536,14 @@ export function About() {
           <Portrait className="aspect-square col-span-3 md:aspect-square md:col-span-1 md:h-full md:w-full md:col-start-2 md:row-start-2" />
 
           <PrinciplesCard className="md:col-span-2 md:col-start-2 md:row-start-1" />
+          {/* Same hint pill as the desktop deck's "hover to read more" badge —
+              kept visually identical even though mobile has no hover; it sits
+              above the 3 static principle cards instead of floating over them. */}
+          <div className="md:hidden col-span-6 flex justify-center">
+            <span className="rounded-full border border-accent/10 bg-card/50 px-3 py-1 font-mono text-[8px] font-medium uppercase tracking-[0.2em] text-accent/60 backdrop-blur-sm">
+              {t('about.principles.hint')}
+            </span>
+          </div>
           {principles.map((pr) => (
             <PrincipleMiniCard key={pr.n} pr={pr} className="md:hidden col-span-2" />
           ))}
