@@ -139,7 +139,7 @@ function PrinciplesCard({ className = '' }: { className?: string }) {
   const variants = ['left', 'mid', 'right'] as const;
   return (
     <div
-      className={`group relative h-32 overflow-hidden rounded-2xl border border-card-border bg-gradient-to-br from-card to-card-border backdrop-blur-md transition-colors duration-300 hover:border-accent/60 md:h-full ${className}`}
+      className={`group relative hidden h-32 overflow-hidden rounded-2xl border border-card-border bg-gradient-to-br from-card to-card-border backdrop-blur-md transition-colors duration-300 hover:border-accent/60 md:block md:h-full ${className}`}
       onMouseLeave={() => setHovered(null)}
     >
       {/* hover hint */}
@@ -158,21 +158,25 @@ function PrinciplesCard({ className = '' }: { className?: string }) {
         className="pointer-events-none absolute inset-0 opacity-[0.03]"
         style={{ backgroundImage: 'radial-gradient(circle, var(--foreground) 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }}
       />
-      {/* mobile fallback */}
-      <div className="flex flex-col gap-3 p-6 md:hidden">
-        {principles.map((pr) => (
-          <div key={pr.n}>
-            <h3 className="text-[11px] font-bold uppercase leading-tight text-foreground">{t(`about.principles.${pr.n}.title`)}</h3>
-            <p className="mt-1 text-[9px] leading-tight text-muted opacity-70">{t(`about.principles.${pr.n}.body`)}</p>
-          </div>
-        ))}
-      </div>
       {/* desktop deck */}
       <div className="relative z-10 hidden h-full w-full items-end justify-center overflow-hidden rounded-2xl px-2 md:flex">
         {principles.map((pr, i) => (
           <DeckCard key={pr.n} pr={pr} variant={variants[i] ?? 'mid'} hovered={hovered} setHovered={setHovered} index={i} />
         ))}
       </div>
+    </div>
+  );
+}
+
+// ── Mobile-only: each principle as its own small card, side by side ──────────
+function PrincipleMiniCard({ pr, className = '' }: { pr: (typeof principles)[number]; className?: string }) {
+  const t = useT();
+  return (
+    <div
+      className={`rounded-xl border border-card-border bg-gradient-to-br from-card to-card-border p-3 backdrop-blur-md ${className}`}
+    >
+      <h3 className="text-[10px] font-bold uppercase leading-tight text-foreground">{t(`about.principles.${pr.n}.title`)}</h3>
+      <p className="mt-1 text-[9px] leading-tight text-muted opacity-70">{t(`about.principles.${pr.n}.body`)}</p>
     </div>
   );
 }
@@ -212,7 +216,17 @@ const mindsetPhotos = Object.keys(mindsetModules)
     position: PHOTO_POSITION[fileKey(k)] ?? 'center',
   }));
 
-function Mindset({ className = '' }: { className?: string }) {
+function Mindset({
+  className = '',
+  showIntro = true,
+  showCarousel = true,
+}: {
+  className?: string;
+  // On mobile the reference layout splits this card in two (intro text card +
+  // carousel card, in different grid cells); desktop keeps them fused.
+  showIntro?: boolean;
+  showCarousel?: boolean;
+}) {
   const t = useT();
   const reduced = useReducedMotion();
   const photos = mindsetPhotos;
@@ -224,10 +238,10 @@ function Mindset({ className = '' }: { className?: string }) {
 
   // Auto-advance every 3.5s; pause on hover and when reduced-motion is set.
   useEffect(() => {
-    if (reduced || paused || count <= 1) return;
+    if (reduced || paused || count <= 1 || !showCarousel) return;
     const id = window.setInterval(() => setActive((a) => (a + 1) % count), 3500);
     return () => window.clearInterval(id);
-  }, [reduced, paused, count]);
+  }, [reduced, paused, count, showCarousel]);
 
   const slots =
     count > 0
@@ -244,17 +258,20 @@ function Mindset({ className = '' }: { className?: string }) {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="z-20 flex shrink-0 flex-col gap-2 p-4 pb-2 md:p-5 md:pb-0">
-        <div>
-          <h3 className="mb-2 text-3xl font-bold tracking-tight text-foreground">{t('about.mindset.title')}</h3>
-          <div className="h-0.5 w-8 rounded-full bg-accent/50" />
+      {showIntro && (
+        <div className="z-20 flex shrink-0 flex-col gap-2 p-4 pb-2 md:p-5 md:pb-0">
+          <div>
+            <h3 className="mb-2 text-3xl font-bold tracking-tight text-foreground">{t('about.mindset.title')}</h3>
+            <div className="h-0.5 w-8 rounded-full bg-accent/50" />
+          </div>
+          <p className="text-base leading-relaxed text-muted">
+            <strong className="text-foreground/90">{t('about.mindset.line1.strong')}</strong>{t('about.mindset.line1.rest')}
+          </p>
         </div>
-        <p className="text-base leading-relaxed text-muted">
-          <strong className="text-foreground/90">{t('about.mindset.line1.strong')}</strong>{t('about.mindset.line1.rest')}
-        </p>
-      </div>
+      )}
 
-      {/* coverflow carousel */}
+      {showCarousel && (
+      <>
       <div className="relative flex flex-1 items-center justify-center overflow-hidden px-2 py-3 md:py-4" style={{ perspective: 1000 }}>
         <div className="relative flex h-full min-h-[150px] w-full items-center justify-center">
           {slots.map(({ side, i }) => {
@@ -335,6 +352,30 @@ function Mindset({ className = '' }: { className?: string }) {
           <strong className="text-foreground/90">{t('about.mindset.line2.strong')}</strong>{t('about.mindset.line2.rest')}
         </p>
       </div>
+      </>
+      )}
+    </div>
+  );
+}
+
+// ── Mobile-only: the Hero memoji video, reused to fill the gap left under
+// Craft in the mobile bento (matches the reference's bottom-left photo tile).
+function AvatarCard({ className = '' }: { className?: string }) {
+  return (
+    <div className={`relative overflow-hidden rounded-2xl border border-card-border bg-black ${className}`}>
+      <video
+        className="h-full w-full object-cover"
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+        poster="/avatar-poster.webp"
+        aria-label={`${profile.name} avatar`}
+      >
+        <source src="/avatar.webm" type="video/webm" />
+        <source src="/avatar.mp4" type="video/mp4" />
+      </video>
     </div>
   );
 }
@@ -484,14 +525,28 @@ export function About() {
   return (
     <section id="about" className="mx-auto max-w-5xl px-4 pb-32 pt-0" style={{ scrollMarginTop: 120 }}>
       <Reveal>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:grid-rows-[9rem_auto_9rem]">
-          <NameCard className="col-span-1 row-span-1 md:col-start-1 md:row-start-1" />
-          <PrinciplesCard className="col-span-2 md:col-span-2 md:col-start-2 md:row-start-1" />
+        {/* Mobile uses a 6-col grid (halves = span-3, thirds = span-2) so the
+            bento reads: [Name|Portrait] / [3 principle cards] / [Craft|Location]
+            / [Craft(cont.)|Mindset intro] / [Avatar|Mindset carousel] — a plain
+            sparse auto-flow, just from DOM order + spans, no explicit
+            positioning needed. Desktop keeps its original explicit 3-col grid. */}
+        <div className="grid grid-cols-6 gap-3 md:grid-cols-3 md:grid-rows-[9rem_auto_9rem]">
+          <NameCard className="col-span-3 md:col-span-1 md:row-span-1 md:col-start-1 md:row-start-1" />
+          <Portrait className="aspect-square col-span-3 md:aspect-square md:col-span-1 md:h-full md:w-full md:col-start-2 md:row-start-2" />
 
-          <Mindset className="col-span-1 row-span-2 md:col-start-1 md:row-start-2" />
-          <Portrait className="aspect-square col-span-1 row-span-1 h-full w-full md:col-start-2 md:row-start-2" />
-          <Location className="aspect-square col-span-1 row-span-1 h-full w-full md:col-start-2 md:row-start-3" />
-          <Craft className="col-span-1 row-span-2 md:col-start-3 md:row-start-2" />
+          <PrinciplesCard className="md:col-span-2 md:col-start-2 md:row-start-1" />
+          {principles.map((pr) => (
+            <PrincipleMiniCard key={pr.n} pr={pr} className="md:hidden col-span-2" />
+          ))}
+
+          <Mindset className="hidden md:flex col-span-1 row-span-2 md:col-start-1 md:row-start-2" />
+
+          <Craft className="col-span-3 row-span-2 md:col-span-1 md:row-span-2 md:col-start-3 md:row-start-2" />
+          <Location className="aspect-square col-span-3 md:aspect-square md:col-span-1 md:h-full md:w-full md:col-start-2 md:row-start-3" />
+
+          <Mindset showCarousel={false} className="md:hidden col-span-3" />
+          <AvatarCard className="md:hidden col-span-3 aspect-square" />
+          <Mindset showIntro={false} className="md:hidden col-span-3" />
         </div>
       </Reveal>
     </section>
