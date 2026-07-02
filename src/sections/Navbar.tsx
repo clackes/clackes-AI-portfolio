@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { Calendar } from 'lucide-react';
 import { useLang, useT } from '@/i18n';
 import { navigate } from '@/lib/nav';
@@ -101,66 +102,75 @@ export function Navbar() {
           })}
         </div>
 
-        {/* right — book a call */}
-        <div className="pointer-events-auto ml-auto hidden md:block">
+        {/* right — book a call. Icon-only circle on mobile (matches the lang
+            + hamburger circles and leaves room for the centred hamburger);
+            expands to the full text pill from md up. */}
+        <div className="pointer-events-auto ml-auto">
           <button
             type="button"
             onClick={bookNow}
-            className="inline-flex items-center gap-2 rounded-full border border-card-border bg-card/40 px-5 py-2.5 text-sm font-semibold text-foreground backdrop-blur transition-colors hover:border-accent/60"
+            aria-label={t('nav.book')}
+            className="flex h-10 w-10 items-center justify-center gap-2 rounded-full border border-card-border bg-card/40 text-sm font-semibold text-foreground backdrop-blur transition-colors hover:border-accent/60 md:h-auto md:w-auto md:px-5 md:py-2.5"
           >
-            <Calendar className="h-4 w-4" />
-            {t('nav.book')}
+            <Calendar className="h-4 w-4 shrink-0" />
+            <span className="hidden md:inline">{t('nav.book')}</span>
           </button>
         </div>
 
-        {/* mobile — hamburger */}
-        <div className="pointer-events-auto ml-auto flex items-center gap-2 md:hidden">
-          <button
-            onClick={() => setOpen((v) => !v)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-card-border bg-card/60 backdrop-blur"
-            aria-label="Toggle menu"
-            aria-expanded={open}
-          >
-            <div className="space-y-1.5">
-              <span className={`block h-px w-5 bg-foreground transition-transform ${open ? 'translate-y-[3px] rotate-45' : ''}`} />
-              <span className={`block h-px w-5 bg-foreground transition-transform ${open ? '-translate-y-[3px] -rotate-45' : ''}`} />
-            </div>
-          </button>
+        {/* mobile — centred hamburger opens a real dropdown (Radix: focus
+            trap, Esc, outside-click, arrow-key nav all come for free) */}
+        <div className="pointer-events-auto absolute left-1/2 -translate-x-1/2 md:hidden">
+          <DropdownMenu.Root open={open} onOpenChange={setOpen}>
+            <DropdownMenu.Trigger asChild>
+              <button
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-card-border bg-card/60 backdrop-blur"
+                aria-label="Toggle menu"
+              >
+                <div className="space-y-1.5">
+                  <span className={`block h-px w-5 bg-foreground transition-transform ${open ? 'translate-y-[3px] rotate-45' : ''}`} />
+                  <span className={`block h-px w-5 bg-foreground transition-transform ${open ? '-translate-y-[3px] -rotate-45' : ''}`} />
+                </div>
+              </button>
+            </DropdownMenu.Trigger>
+
+            <AnimatePresence>
+              {open && (
+                <DropdownMenu.Portal forceMount>
+                  <DropdownMenu.Content
+                    forceMount
+                    asChild
+                    align="center"
+                    sideOffset={12}
+                    collisionPadding={16}
+                  >
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, y: -8 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: -8 }}
+                      transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                      className="pointer-events-auto w-56 origin-top rounded-2xl border border-card-border bg-background/95 p-2 shadow-2xl shadow-black/40 backdrop-blur-xl"
+                    >
+                      {linkDefs.map((l) => (
+                        <DropdownMenu.Item key={l.href} asChild className="outline-none">
+                          <a
+                            href={l.href}
+                            onClick={(e) => onNavClick(e, l.href)}
+                            className={`block cursor-pointer rounded-xl px-4 py-2.5 text-base font-semibold transition-colors ${
+                              active === l.id ? 'bg-card-border text-foreground' : 'text-foreground/90 hover:bg-card-border/60 hover:text-foreground'
+                            }`}
+                          >
+                            {t(l.key)}
+                          </a>
+                        </DropdownMenu.Item>
+                      ))}
+                    </motion.div>
+                  </DropdownMenu.Content>
+                </DropdownMenu.Portal>
+              )}
+            </AnimatePresence>
+          </DropdownMenu.Root>
         </div>
       </nav>
-
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="pointer-events-auto mx-6 mt-2 overflow-hidden rounded-2xl border border-card-border bg-background/95 backdrop-blur-xl md:hidden"
-          >
-            <div className="flex flex-col gap-1 px-6 py-4">
-              {linkDefs.map((l) => (
-                <a
-                  key={l.href}
-                  href={l.href}
-                  onClick={(e) => onNavClick(e, l.href)}
-                  className="py-2 text-lg font-semibold text-foreground/90 hover:text-foreground"
-                >
-                  {t(l.key)}
-                </a>
-              ))}
-              <button
-                type="button"
-                onClick={bookNow}
-                className="mt-2 inline-flex w-max items-center gap-2 rounded-full border border-card-border px-5 py-2 text-sm font-semibold text-foreground"
-              >
-                <Calendar className="h-4 w-4" />
-                {t('nav.book')}
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </motion.header>
   );
 }
