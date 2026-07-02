@@ -8,27 +8,11 @@
     "createdAt": "2026-07-01T10:00:00.000Z"
   },
   {
-    "id": "f41f439b-abf0-4b40-a855-bc62e05dc17b",
-    "name": "clackes",
-    "avatar": "",
-    "text": "ciao",
-    "provider": "demo",
-    "createdAt": "2026-07-01T19:41:18.067Z"
-  },
-  {
-    "id": "6e707151-6084-43a8-a246-be1492c829f8",
-    "name": "Alberto Vergani",
-    "avatar": "https://lh3.googleusercontent.com/a/ACg8ocLv1MVl_syXbzMH7x3PEjH9xWt93fNDkCXubVo4RsiJZ1e1C4g=s96-c",
-    "text": "test",
+    "id": "481362e1-6443-4ea8-99ba-3541ca42ff24",
+    "name": "Hicham Talha",
+    "avatar": "https://lh3.googleusercontent.com/a/ACg8ocIVuWtWIJlbE1NkVzZC2GJOldB8griPtf17lU3bhbCvqW9Dh65A=s96-c",
+    "text": "i really like it. Good job mate!",
     "provider": "google",
-    "createdAt": "2026-07-02T02:23:18.482Z"
-  },
-  {
-    "id": "09ebf577-28f8-4d87-a103-5ff8291b8ed2",
-    "name": "Alberto Vergani",
-    "avatar": "https://lh3.googleusercontent.com/a/ACg8ocLv1MVl_syXbzMH7x3PEjH9xWt93fNDkCXubVo4RsiJZ1e1C4g=s96-c",
-    "text": "ciao",
-    "provider": "google",
-    "createdAt": "2026-07-02T02:23:25.251Z"
+    "createdAt": "2026-07-02T11:27:16.938Z"
   }
 ]
