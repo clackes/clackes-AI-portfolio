@@ -53,7 +53,10 @@ function buildWireframe(meridians: number, parallels: number, steps = 96): WireL
   return lines;
 }
 const AUTO_SPIN = 0.0032; // idle rotation speed around Y (rad/frame)
-const MAX_TILT = 0.9; // clamp for pointer-driven vertical tilt
+// Extra rotation added per pixel scrolled, on top of the constant idle spin —
+// scrolling down spins it further, scrolling up spins it back.
+const SCROLL_SPIN = 0.0012;
+const HOVER_SCALE = 1.45; // icon grows this much on hover
 
 // easeOutCubic — makes the assembly feel fast at first, gentle on arrival.
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
@@ -69,13 +72,24 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
   // on every frame (forces a synchronous layout when interleaved with the
   // style writes below — a classic source of scroll jank).
   const sectionTop = useRef(0);
-  // Pointer offset from centre, normalised to [-1, 1]. null → not hovering.
-  const pointer = useRef<{ x: number; y: number } | null>(null);
   // 0 → icons off-screen at their side entry points; 1 → fully seated on the sphere.
   const assembly = useRef(reduced ? 1 : 0);
+  // Which icon (if any) is currently hovered, and each icon's eased 0→1
+  // "hovered-ness" used to grow + glow it without fighting the per-frame
+  // transform writes below (a CSS :hover transition would just get
+  // overwritten every frame).
+  const hoveredIndex = useRef<number | null>(null);
+  const hoverProgress = useRef<number[]>([]);
 
   const base = useMemo(() => fibonacciSphere(skills.length), [skills.length]);
-  const wire = useMemo(() => buildWireframe(22, 11, 64), []);
+  if (hoverProgress.current.length !== skills.length) {
+    hoverProgress.current = skills.map(() => 0);
+  }
+  // Same line count (density) as before, but fewer points per line — each
+  // line is still a smooth-looking curve at this size, and halving the point
+  // count keeps the per-frame redraw cheap enough to run every frame (see
+  // below) without reintroducing scroll jank.
+  const wire = useMemo(() => buildWireframe(22, 11, 32), []);
   // Two <path>s per line (front + back arcs) — kept stable so the render loop
   // can rewrite their `d` each frame without React re-rendering.
   const wireFrontRefs = useRef<(SVGPathElement | null)[]>([]);
@@ -122,21 +136,6 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
     );
     io.observe(el);
 
-    // The cursor steers the sphere: horizontal offset spins it left/right,
-    // vertical offset tilts it up/down — exactly like the reference.
-    const onMove = (e: PointerEvent) => {
-      const r = el.getBoundingClientRect();
-      pointer.current = {
-        x: ((e.clientX - r.left) / r.width) * 2 - 1,
-        y: ((e.clientY - r.top) / r.height) * 2 - 1,
-      };
-    };
-    const onLeave = () => {
-      pointer.current = null;
-    };
-    el.addEventListener('pointermove', onMove);
-    el.addEventListener('pointerleave', onLeave);
-
     // Assembly progress is driven by how far the section has entered the viewport.
     // 0 while the section is still below the fold; 1 once it is comfortably in view.
     // Batched through rAF so a burst of scroll events (fast trackpad/touch
@@ -173,8 +172,9 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
     let raf = 0;
     let frame = 0;
     let angleY = 0; // rotation around vertical axis
-    let tilt = BASE_TILT; // current x-axis tilt (eased toward pointer)
-    let spin = AUTO_SPIN; // current Y angular velocity (eased toward target)
+    const tilt = BASE_TILT; // fixed — the sphere no longer tilts toward the cursor
+    let lastScrollY = window.scrollY;
+    let scrollSpin = 0; // eased extra angular velocity from scrolling
 
     const render = () => {
       const { w, h } = dims.current;
@@ -182,13 +182,14 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
       const cx = w / 2;
       const cy = h / 2;
 
-      // Ease rotation velocity + tilt toward the pointer-driven targets.
-      const p = pointer.current;
-      const targetSpin = reduced ? 0 : AUTO_SPIN + (p ? p.x * 0.028 : 0);
-      const targetTilt = BASE_TILT + (p && !reduced ? p.y * MAX_TILT : 0);
-      spin += (targetSpin - spin) * 0.06;
-      tilt += (targetTilt - tilt) * 0.06;
-      angleY += spin;
+      // Own idle spin, plus extra spin proportional to how much the page has
+      // scrolled since last frame — no more cursor-follow.
+      const scrollY = window.scrollY;
+      const scrollDelta = reduced ? 0 : scrollY - lastScrollY;
+      lastScrollY = scrollY;
+      const targetScrollSpin = scrollDelta * SCROLL_SPIN;
+      scrollSpin += (targetScrollSpin - scrollSpin) * 0.15;
+      angleY += reduced ? 0 : AUTO_SPIN + scrollSpin;
 
       const cosT = Math.cos(tilt);
       const sinT = Math.sin(tilt);
@@ -228,8 +229,16 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
 
         // While flying, icons stay crisp + full-colour; ease into depth cues.
         const flyScale = 1.15;
-        const finalScale = flyScale * inv + scale * a;
+        let finalScale = flyScale * inv + scale * a;
         const finalOpacity = inv * 1 + a * opacity;
+
+        // Ease this icon's hover state — grows + glows smoothly instead of
+        // snapping, and doesn't fight the per-frame transform writes the way
+        // a CSS :hover transition would.
+        const targetHover = hoveredIndex.current === i ? 1 : 0;
+        const hp = hoverProgress.current[i] + (targetHover - hoverProgress.current[i]) * 0.18;
+        hoverProgress.current[i] = hp;
+        finalScale *= 1 + hp * (HOVER_SCALE - 1);
 
         const node = nodeRefs.current[i];
         if (node) {
@@ -238,10 +247,13 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
           // transform + opacity only — no CSS filter(). Even grayscale() alone
           // forced a per-element repaint every frame across 30 nodes and was
           // the single biggest source of worst-case stutter (~150ms spikes).
-          // Depth already reads clearly from opacity + scale alone.
+          // Depth already reads clearly from opacity + scale alone. The one
+          // exception is the hover glow below — only the (at most one)
+          // hovered icon ever pays that cost.
           node.style.transform = `translate3d(-50%,-50%,0) scale(${finalScale.toFixed(3)})`;
           node.style.opacity = finalOpacity.toFixed(3);
-          node.style.zIndex = String(Math.round(depth * 1000));
+          node.style.zIndex = String(Math.round(depth * 1000) + Math.round(hp * 2000));
+          node.style.filter = hp > 0.01 ? `drop-shadow(0 0 ${(hp * 9).toFixed(1)}px ${skills[i].color})` : '';
         }
         const label = labelRefs.current[i];
         if (label) {
@@ -252,19 +264,23 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
         }
       }
 
-      // Rotate the wireframe with the same angleY / tilt as the icons. The mesh
-      // lives in the overlay SVG's own 200×200 space (radius 99, centre 100,100).
-      // It's a slow, faint background decoration, so redrawing it at ~20fps
-      // (every 3rd frame) instead of 60fps is invisible but cuts the cost of
-      // rebuilding ~2,100 path points and writing 44 SVG "d" attributes to a
-      // third — needed headroom after densifying the mesh (22 meridians × 11
-      // parallels × 64 steps, up from 14×7×48).
+      // Rotate the wireframe with the same angleY / tilt as the icons, at
+      // ~30fps (every other frame) instead of 60. Skipping every 3rd frame
+      // (as before) made jumps big enough to read as a "vibration" once the
+      // mesh was bright and dense; at this idle rotation speed a 30fps
+      // redraw's per-step angle change is small enough to look continuous,
+      // while still roughly halving the cost of this loop. Lives in the
+      // overlay SVG's own 200×200 space (radius 99, centre 100,100).
       frame++;
-      if (frame % 3 === 0) for (let li = 0; li < wire.length; li++) {
+      if (frame % 2 === 0) for (let li = 0; li < wire.length; li++) {
         const line = wire[li];
         const ring = line.closed ? line.pts.concat(line.pts[0]) : line.pts;
-        let frontD = '';
-        let backD = '';
+        // Array + join instead of repeated string += (cheaper for V8 at this
+        // point count), and integer coordinates — sub-pixel precision on a
+        // viewBox this size doesn't read as smoother, just costs more per
+        // frame to format.
+        const frontParts: string[] = [];
+        const backParts: string[] = [];
         let side: 0 | 1 | -1 = 0; // -1 back, 1 front, 0 uninitialised
         for (let k = 0; k < ring.length; k++) {
           const bp = ring[k];
@@ -272,23 +288,17 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
           const rz = -bp.x * sinA + bp.z * cosA;
           const y2 = bp.y * cosT - rz * sinT;
           const z2 = bp.y * sinT + rz * cosT;
-          const sx = (100 + rx * 99).toFixed(2);
-          const sy = (100 + y2 * 99).toFixed(2);
+          const sx = Math.round(100 + rx * 99);
+          const sy = Math.round(100 + y2 * 99);
           const s: 1 | -1 = z2 >= 0 ? 1 : -1;
-          if (s !== side) {
-            if (s === 1) frontD += `M${sx} ${sy}`;
-            else backD += `M${sx} ${sy}`;
-            side = s;
-          } else if (s === 1) {
-            frontD += `L${sx} ${sy}`;
-          } else {
-            backD += `L${sx} ${sy}`;
-          }
+          const parts = s === 1 ? frontParts : backParts;
+          parts.push(`${s !== side ? 'M' : 'L'}${sx} ${sy}`);
+          side = s;
         }
         const fp = wireFrontRefs.current[li];
         const bpath = wireBackRefs.current[li];
-        if (fp) fp.setAttribute('d', frontD);
-        if (bpath) bpath.setAttribute('d', backD);
+        if (fp) fp.setAttribute('d', frontParts.join(''));
+        if (bpath) bpath.setAttribute('d', backParts.join(''));
       }
 
       raf = visible ? requestAnimationFrame(render) : 0;
@@ -300,8 +310,6 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
       cancelAnimationFrame(raf);
       io.disconnect();
       ro.disconnect();
-      el.removeEventListener('pointermove', onMove);
-      el.removeEventListener('pointerleave', onLeave);
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onResize);
     };
@@ -355,10 +363,16 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
           <div
             key={s.name}
             ref={(n) => (nodeRefs.current[i] = n)}
-            className="pointer-events-none absolute flex flex-col items-center will-change-transform"
+            className="pointer-events-auto absolute flex cursor-default flex-col items-center will-change-transform"
             style={{ left: 0, top: 0, opacity: 0 }}
+            onPointerEnter={() => {
+              hoveredIndex.current = i;
+            }}
+            onPointerLeave={() => {
+              if (hoveredIndex.current === i) hoveredIndex.current = null;
+            }}
           >
-            <Icon size={42} color={s.color} className="drop-shadow-md" />
+            <Icon size={30} color={s.color} className="drop-shadow-md" />
             <span
               ref={(n) => (labelRefs.current[i] = n)}
               className="mt-2 whitespace-nowrap rounded-full px-2 py-0.5 text-center font-mono text-[10px] font-bold uppercase tracking-widest text-muted"

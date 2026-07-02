@@ -78,18 +78,6 @@ function ExploreCard({ card, index }: { card: Card; index: number }) {
         className="pointer-events-none absolute inset-0 transition-opacity duration-300 ease-out"
         style={{ background: gradient, opacity: hov ? 1 : 0 }}
       />
-      {/* dotted grid texture — brightens over the fill */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 transition-opacity duration-300"
-        style={{
-          backgroundImage: 'radial-gradient(currentColor 1px, transparent 0)',
-          backgroundSize: '16px 16px',
-          color: '#ffffff',
-          opacity: hov ? 0.12 : 0.05,
-        }}
-      />
-
       {/* icon tile — gradient border → white on hover */}
       <span
         className="relative z-10 flex h-14 w-14 items-center justify-center rounded-xl transition-colors duration-300"
