@@ -547,19 +547,21 @@ export function About() {
           <Portrait className="aspect-square col-span-3 md:aspect-square md:col-span-1 md:h-full md:w-full md:col-start-2 md:row-start-2" />
 
           <PrinciplesCard className="md:col-span-2 md:col-start-2 md:row-start-1" />
-          {/* Same hint pill as the desktop deck's "hover to read more" badge —
-              on desktop it floats absolutely, overlapping the top edge of the
-              card deck underneath. Match that here with a negative bottom
-              margin so it overlaps the 3 principle cards the same way. */}
-          <div className="relative z-10 -mb-3 md:hidden col-span-6 flex justify-center">
-            <span className="rounded-full border border-accent/10 bg-card/50 px-3 py-1 font-mono text-[8px] font-medium uppercase tracking-[0.2em] text-accent/60 backdrop-blur-sm">
-              {t('about.principles.hint')}
-            </span>
-          </div>
-          <div className="md:hidden col-span-6 flex items-end gap-3">
-            {principles.map((pr, i) => (
-              <PrincipleMiniCard key={pr.n} pr={pr} raised={i === 1} className="flex-1" />
-            ))}
+          {/* Desktop wraps the hint pill + fan of cards in one outer box
+              (gradient bg, rounded-2xl, border) — the 3 cards sit inside it,
+              not floating loose on the page background. Rebuild that same
+              nesting here instead of the 3 cards alone. */}
+          <div className="relative overflow-hidden rounded-2xl border border-card-border bg-gradient-to-br from-card to-card-border p-3 pt-7 backdrop-blur-md md:hidden col-span-6">
+            <div className="pointer-events-none absolute inset-x-0 top-2.5 z-10 flex justify-center">
+              <span className="rounded-full border border-accent/10 bg-card/50 px-3 py-1 font-mono text-[8px] font-medium uppercase tracking-[0.2em] text-accent/60 backdrop-blur-sm">
+                {t('about.principles.hint')}
+              </span>
+            </div>
+            <div className="flex items-end gap-3">
+              {principles.map((pr, i) => (
+                <PrincipleMiniCard key={pr.n} pr={pr} raised={i === 1} className="flex-1" />
+              ))}
+            </div>
           </div>
 
           <Mindset className="hidden md:flex col-span-1 row-span-2 md:col-start-1 md:row-start-2" />

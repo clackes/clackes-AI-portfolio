@@ -75,7 +75,7 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
   const assembly = useRef(reduced ? 1 : 0);
 
   const base = useMemo(() => fibonacciSphere(skills.length), [skills.length]);
-  const wire = useMemo(() => buildWireframe(14, 7, 48), []);
+  const wire = useMemo(() => buildWireframe(22, 11, 64), []);
   // Two <path>s per line (front + back arcs) — kept stable so the render loop
   // can rewrite their `d` each frame without React re-rendering.
   const wireFrontRefs = useRef<(SVGPathElement | null)[]>([]);
@@ -254,11 +254,13 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
 
       // Rotate the wireframe with the same angleY / tilt as the icons. The mesh
       // lives in the overlay SVG's own 200×200 space (radius 99, centre 100,100).
-      // It's a slow, faint background decoration, so redrawing it at ~30fps
-      // (every other frame) instead of 60fps is invisible but halves the cost
-      // of rebuilding ~1,100 path points and writing 28 SVG "d" attributes.
+      // It's a slow, faint background decoration, so redrawing it at ~20fps
+      // (every 3rd frame) instead of 60fps is invisible but cuts the cost of
+      // rebuilding ~2,100 path points and writing 44 SVG "d" attributes to a
+      // third — needed headroom after densifying the mesh (22 meridians × 11
+      // parallels × 64 steps, up from 14×7×48).
       frame++;
-      if (frame % 2 === 0) for (let li = 0; li < wire.length; li++) {
+      if (frame % 3 === 0) for (let li = 0; li < wire.length; li++) {
         const line = wire[li];
         const ring = line.closed ? line.pts.concat(line.pts[0]) : line.pts;
         let frontD = '';
