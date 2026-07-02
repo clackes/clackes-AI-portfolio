@@ -537,9 +537,10 @@ export function About() {
 
           <PrinciplesCard className="md:col-span-2 md:col-start-2 md:row-start-1" />
           {/* Same hint pill as the desktop deck's "hover to read more" badge —
-              kept visually identical even though mobile has no hover; it sits
-              above the 3 static principle cards instead of floating over them. */}
-          <div className="md:hidden col-span-6 flex justify-center">
+              on desktop it floats absolutely, overlapping the top edge of the
+              card deck underneath. Match that here with a negative bottom
+              margin so it overlaps the 3 principle cards the same way. */}
+          <div className="relative z-10 -mb-3 md:hidden col-span-6 flex justify-center">
             <span className="rounded-full border border-accent/10 bg-card/50 px-3 py-1 font-mono text-[8px] font-medium uppercase tracking-[0.2em] text-accent/60 backdrop-blur-sm">
               {t('about.principles.hint')}
             </span>
