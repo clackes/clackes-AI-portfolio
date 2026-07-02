@@ -64,13 +64,18 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
   const nodeRefs = useRef<(HTMLDivElement | null)[]>([]);
   const labelRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const dims = useRef({ w: 0, h: 0 });
+  // Document-relative top of the container, so scroll-driven progress can be
+  // computed from `window.scrollY` (cheap) instead of getBoundingClientRect()
+  // on every frame (forces a synchronous layout when interleaved with the
+  // style writes below — a classic source of scroll jank).
+  const sectionTop = useRef(0);
   // Pointer offset from centre, normalised to [-1, 1]. null → not hovering.
   const pointer = useRef<{ x: number; y: number } | null>(null);
   // 0 → icons off-screen at their side entry points; 1 → fully seated on the sphere.
   const assembly = useRef(reduced ? 1 : 0);
 
   const base = useMemo(() => fibonacciSphere(skills.length), [skills.length]);
-  const wire = useMemo(() => buildWireframe(24, 12), []);
+  const wire = useMemo(() => buildWireframe(14, 7, 48), []);
   // Two <path>s per line (front + back arcs) — kept stable so the render loop
   // can rewrite their `d` each frame without React re-rendering.
   const wireFrontRefs = useRef<(SVGPathElement | null)[]>([]);
@@ -95,10 +100,27 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
     const measure = () => {
       const r = el.getBoundingClientRect();
       dims.current = { w: r.width, h: r.height };
+      sectionTop.current = r.top + window.scrollY;
     };
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(el);
+
+    // Only run the render loop while the sphere is at least close to the
+    // viewport — this is a hand-rolled 3D animation (SVG wireframe + 30 DOM
+    // nodes recomputed every frame), so keeping it running while the user is
+    // scrolling through unrelated sections wastes main-thread time and adds
+    // to scroll jank. A generous rootMargin means it's already animating by
+    // the time the section is actually on screen.
+    let visible = false;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible && !raf) raf = requestAnimationFrame(render);
+      },
+      { rootMargin: '400px 0px' },
+    );
+    io.observe(el);
 
     // The cursor steers the sphere: horizontal offset spins it left/right,
     // vertical offset tilts it up/down — exactly like the reference.
@@ -117,25 +139,39 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
 
     // Assembly progress is driven by how far the section has entered the viewport.
     // 0 while the section is still below the fold; 1 once it is comfortably in view.
-    const onScroll = () => {
+    // Batched through rAF so a burst of scroll events (fast trackpad/touch
+    // momentum) only forces one layout read per frame instead of one each.
+    let scrollScheduled = false;
+    const updateAssembly = () => {
+      scrollScheduled = false;
       if (reduced) {
         assembly.current = 1;
         return;
       }
-      const rect = el.getBoundingClientRect();
+      const top = sectionTop.current - window.scrollY;
       const vh = window.innerHeight || 1;
       // Start assembling when the section's top crosses ~90% of the viewport,
       // finish when it reaches ~25% — a comfortable ~65% viewport of travel.
       const start = vh * 0.9;
       const end = vh * 0.25;
-      const raw = (start - rect.top) / Math.max(1, start - end);
+      const raw = (start - top) / Math.max(1, start - end);
       assembly.current = Math.max(0, Math.min(1, raw));
     };
-    onScroll();
+    const onScroll = () => {
+      if (scrollScheduled) return;
+      scrollScheduled = true;
+      requestAnimationFrame(updateAssembly);
+    };
+    const onResize = () => {
+      measure();
+      updateAssembly();
+    };
+    updateAssembly();
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
+    window.addEventListener('resize', onResize);
 
     let raf = 0;
+    let frame = 0;
     let angleY = 0; // rotation around vertical axis
     let tilt = BASE_TILT; // current x-axis tilt (eased toward pointer)
     let spin = AUTO_SPIN; // current Y angular velocity (eased toward target)
@@ -176,8 +212,6 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
         const depth = (z2 + 1) / 2; // 0 (back) → 1 (front)
         const scale = 0.55 + depth * 0.65;
         const opacity = 0.14 + depth * 0.86;
-        const blur = (1 - depth) * 1.6;
-        const gray = (1 - depth) * 100;
 
         // Sphere seat (destination) in container coordinates.
         const sphereX = cx + x2 * radius;
@@ -196,16 +230,17 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
         const flyScale = 1.15;
         const finalScale = flyScale * inv + scale * a;
         const finalOpacity = inv * 1 + a * opacity;
-        const finalBlur = blur * a;
-        const finalGray = gray * a;
 
         const node = nodeRefs.current[i];
         if (node) {
           node.style.left = `${posX}px`;
           node.style.top = `${posY}px`;
+          // transform + opacity only — no CSS filter(). Even grayscale() alone
+          // forced a per-element repaint every frame across 30 nodes and was
+          // the single biggest source of worst-case stutter (~150ms spikes).
+          // Depth already reads clearly from opacity + scale alone.
           node.style.transform = `translate3d(-50%,-50%,0) scale(${finalScale.toFixed(3)})`;
           node.style.opacity = finalOpacity.toFixed(3);
-          node.style.filter = `grayscale(${finalGray.toFixed(0)}%) blur(${finalBlur.toFixed(2)}px)`;
           node.style.zIndex = String(Math.round(depth * 1000));
         }
         const label = labelRefs.current[i];
@@ -219,7 +254,11 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
 
       // Rotate the wireframe with the same angleY / tilt as the icons. The mesh
       // lives in the overlay SVG's own 200×200 space (radius 99, centre 100,100).
-      for (let li = 0; li < wire.length; li++) {
+      // It's a slow, faint background decoration, so redrawing it at ~30fps
+      // (every other frame) instead of 60fps is invisible but halves the cost
+      // of rebuilding ~1,100 path points and writing 28 SVG "d" attributes.
+      frame++;
+      if (frame % 2 === 0) for (let li = 0; li < wire.length; li++) {
         const line = wire[li];
         const ring = line.closed ? line.pts.concat(line.pts[0]) : line.pts;
         let frontD = '';
@@ -250,17 +289,19 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
         if (bpath) bpath.setAttribute('d', backD);
       }
 
-      raf = requestAnimationFrame(render);
+      raf = visible ? requestAnimationFrame(render) : 0;
     };
-    raf = requestAnimationFrame(render);
+    // The IntersectionObserver above starts the loop once the sphere is near
+    // the viewport; nothing to kick off here.
 
     return () => {
       cancelAnimationFrame(raf);
+      io.disconnect();
       ro.disconnect();
       el.removeEventListener('pointermove', onMove);
       el.removeEventListener('pointerleave', onLeave);
       window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
+      window.removeEventListener('resize', onResize);
     };
   }, [base, entries, reduced, wire]);
 
