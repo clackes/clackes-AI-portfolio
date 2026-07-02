@@ -169,11 +169,22 @@ function PrinciplesCard({ className = '' }: { className?: string }) {
 }
 
 // ── Mobile-only: each principle as its own small card, side by side ──────────
-function PrincipleMiniCard({ pr, className = '' }: { pr: (typeof principles)[number]; className?: string }) {
+// Same solid bg-card as the desktop deck's individual cards (the gradient
+// belongs to the outer deck container, not each card), and the middle one
+// is taller — same "raised centre card" shape as the desktop fan.
+function PrincipleMiniCard({
+  pr,
+  raised = false,
+  className = '',
+}: {
+  pr: (typeof principles)[number];
+  raised?: boolean;
+  className?: string;
+}) {
   const t = useT();
   return (
     <div
-      className={`rounded-xl border border-card-border bg-gradient-to-br from-card to-card-border p-3 backdrop-blur-md ${className}`}
+      className={`rounded-xl border border-card-border bg-card p-3 backdrop-blur-md ${raised ? 'min-h-[132px]' : 'min-h-[112px]'} ${className}`}
     >
       <h3 className="text-[10px] font-bold uppercase leading-tight text-foreground">{t(`about.principles.${pr.n}.title`)}</h3>
       <p className="mt-1 text-[9px] leading-tight text-muted opacity-70">{t(`about.principles.${pr.n}.body`)}</p>
@@ -545,9 +556,11 @@ export function About() {
               {t('about.principles.hint')}
             </span>
           </div>
-          {principles.map((pr) => (
-            <PrincipleMiniCard key={pr.n} pr={pr} className="md:hidden col-span-2" />
-          ))}
+          <div className="md:hidden col-span-6 flex items-end gap-3">
+            {principles.map((pr, i) => (
+              <PrincipleMiniCard key={pr.n} pr={pr} raised={i === 1} className="flex-1" />
+            ))}
+          </div>
 
           <Mindset className="hidden md:flex col-span-1 row-span-2 md:col-start-1 md:row-start-2" />
 
