@@ -109,10 +109,10 @@ export const projects: Project[] = [
       'Installs on the phone like any app, works offline.',
     ],
     tags: ['FastAPI', 'PostgreSQL', 'React', 'TypeScript', 'Gemini', 'PWA'],
-    image: '/kcal-cover.jpg',
+    image: '/kcal-cover.webp',
     year: '2026',
     client: 'Personal project',
-    images: ['/kcal-1.jpg', '/kcal-2.jpg', '/kcal-3.jpg', '/kcal-4.jpg'],
+    images: ['/kcal-1.webp', '/kcal-2.webp', '/kcal-4.webp'],
   },
   {
     slug: 'baumarine',
@@ -125,18 +125,12 @@ export const projects: Project[] = [
     description:
       'A site for a premium yacht builder on Lake Iseo. The brief was quiet and editorial: let the boats carry the page. I handled the design, art direction and copy, with a build and hosting setup tuned for a small luxury brand.',
     tags: ['WordPress', 'Aruba', 'Plesk', 'Art direction'],
-    image: '/baumarine.jpg',
+    image: '/baumarine.webp',
     domain: 'baumarine.it',
     year: '2025',
     client: 'Baumarine',
     link: { label: 'Visit website', href: 'https://baumarine.it' },
-    images: [
-      '/baumarine-2.jpg',
-      '/baumarine.jpg',
-      '/baumarine-4.jpg',
-      '/baumarine-3.jpg',
-      '/baumarine-5.jpg',
-    ],
+    images: ['/baumarine.webp'],
   },
 ];
 

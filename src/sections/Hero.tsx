@@ -75,6 +75,8 @@ export function Hero() {
             loop
             muted
             playsInline
+            preload="auto"
+            poster="/avatar-poster.webp"
             aria-label={`${profile.name} avatar`}
           >
             <source src="/avatar.webm" type="video/webm" />

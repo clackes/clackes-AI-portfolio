@@ -66,7 +66,7 @@ function PhoneShowcase({
 
 // Ordered screens per project — [left-back, centre-front, right-back].
 const PHONE_SHOWCASES: Record<string, [string, string, string]> = {
-  'kcal-tracker': ['/kcal-2.png', '/kcal-1.png', '/kcal-4.png'],
+  'kcal-tracker': ['/kcal-2.webp', '/kcal-1.webp', '/kcal-4.webp'],
 };
 
 function ProjectCard({ project, index }: { project: Project; index: number }) {

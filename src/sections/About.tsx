@@ -9,7 +9,7 @@ import {
   SiReact, SiNextdotjs, SiTypescript, SiPython, SiFastapi,
   SiNodedotjs, SiTailwindcss, SiDocker, SiGooglegemini, SiPostgresql,
 } from 'react-icons/si';
-import luganoMap from '@/assets/lugano-map.png';
+import luganoMap from '@/assets/lugano-map.webp';
 
 /* ────────────────────────────────────────────────────────────────────────
    About bento — 1:1 with the reference (pszostak.pl) grid & type scale.
@@ -347,7 +347,7 @@ function Portrait({ className = '' }: { className?: string }) {
       className={`relative overflow-hidden rounded-2xl border border-card-border bg-black ${className}`}
     >
       <img
-        src="/portrait.jpg"
+        src="/portrait.webp"
         alt={t('about.portrait.label')}
         loading="lazy"
         className="h-full w-full object-cover object-top"
@@ -482,7 +482,7 @@ function Craft({ className = '' }: { className?: string }) {
 
 export function About() {
   return (
-    <section id="about" className="mx-auto max-w-5xl px-4 pb-32 pt-0" style={{ scrollMarginTop: 0 }}>
+    <section id="about" className="mx-auto max-w-5xl px-4 pb-32 pt-0" style={{ scrollMarginTop: 120 }}>
       <Reveal>
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:grid-rows-[9rem_auto_9rem]">
           <NameCard className="col-span-1 row-span-1 md:col-start-1 md:row-start-1" />
