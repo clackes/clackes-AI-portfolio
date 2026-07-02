@@ -85,11 +85,11 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
   if (hoverProgress.current.length !== skills.length) {
     hoverProgress.current = skills.map(() => 0);
   }
-  // Same line count (density) as before, but fewer points per line — each
-  // line is still a smooth-looking curve at this size, and halving the point
-  // count keeps the per-frame redraw cheap enough to run every frame (see
-  // below) without reintroducing scroll jank.
-  const wire = useMemo(() => buildWireframe(22, 11, 32), []);
+  // Redrawn every frame (see below) — the mismatch between smooth per-frame
+  // icon motion and a skipped-frame wireframe was the actual source of the
+  // "constant lag" feeling, not raw throughput. Lighter mesh than the
+  // absolute densest version so full-rate redraw stays cheap.
+  const wire = useMemo(() => buildWireframe(16, 8, 24), []);
   // Two <path>s per line (front + back arcs) — kept stable so the render loop
   // can rewrite their `d` each frame without React re-rendering.
   const wireFrontRefs = useRef<(SVGPathElement | null)[]>([]);
@@ -170,7 +170,6 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
     window.addEventListener('resize', onResize);
 
     let raf = 0;
-    let frame = 0;
     let angleY = 0; // rotation around vertical axis
     const tilt = BASE_TILT; // fixed — the sphere no longer tilts toward the cursor
     let lastScrollY = window.scrollY;
@@ -257,22 +256,19 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
         }
         const label = labelRefs.current[i];
         if (label) {
-          // Labels only show once assembly is (nearly) complete and the icon
-          // sits on the visible front hemisphere.
-          const labelDepth = depth > 0.55 ? ((depth - 0.55) / 0.45) * 0.9 : 0;
-          label.style.opacity = (labelDepth * a).toFixed(2);
+          // Only the hovered icon's name shows, and only once assembly has
+          // finished — no more names floating over every front-facing icon.
+          label.style.opacity = (hp * a).toFixed(2);
         }
       }
 
-      // Rotate the wireframe with the same angleY / tilt as the icons, at
-      // ~30fps (every other frame) instead of 60. Skipping every 3rd frame
-      // (as before) made jumps big enough to read as a "vibration" once the
-      // mesh was bright and dense; at this idle rotation speed a 30fps
-      // redraw's per-step angle change is small enough to look continuous,
-      // while still roughly halving the cost of this loop. Lives in the
-      // overlay SVG's own 200×200 space (radius 99, centre 100,100).
-      frame++;
-      if (frame % 2 === 0) for (let li = 0; li < wire.length; li++) {
+      // Rotate the wireframe with the same angleY / tilt as the icons, every
+      // frame — any skipped-frame cadence here fell out of step with the
+      // icons' smooth per-frame motion and read as constant micro-lag rather
+      // than a lighter load. The mesh above is deliberately lighter instead,
+      // so full-rate redraw stays cheap. Lives in the overlay SVG's own
+      // 200×200 space (radius 99, centre 100,100).
+      for (let li = 0; li < wire.length; li++) {
         const line = wire[li];
         const ring = line.closed ? line.pts.concat(line.pts[0]) : line.pts;
         // Array + join instead of repeated string += (cheaper for V8 at this
