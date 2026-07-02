@@ -1,0 +1,38 @@
+services:
+  ai-portfolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: clackes-ai-portfolio:latest
+    container_name: ai-portfolio
+    restart: unless-stopped
+    # All secrets (GEMINI_API_KEY, Google/GitHub OAuth, SESSION_SECRET, booking
+    # credentials …) are read at runtime from .env — they are NOT baked into the
+    # image (see .dockerignore). Just copy the repo + .env to the NAS and run
+    # `docker compose up -d --build`.
+    env_file:
+      - .env
+    # Host access at http://<host-ip>:47822
+    # Cloudflare tunnel reaches the container at http://ai-portfolio:8787
+    # via the shared cloudflare-web network.
+    ports:
+      - "${PORT_BIND:-0.0.0.0}:${HOST_PORT:-47822}:8787"
+    # Persist the guestbook messages across rebuilds.
+    volumes:
+      - ./server/guestbook.json:/app/server/guestbook.json
+    networks:
+      - cloudflare-web
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8787/api/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  cloudflare-web:
+    external: true

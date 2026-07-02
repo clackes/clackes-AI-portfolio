@@ -1,6 +1,9 @@
 // Tiny local backend that proxies chat to Gemini.
 // The API key lives ONLY here (server-side, from .env) — it never reaches the browser.
 import 'dotenv/config';
+import path from 'node:path';
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import express from 'express';
 import cors from 'cors';
 import { GoogleGenerativeAI } from '@google/generative-ai';
@@ -8,6 +11,8 @@ import { PERSONA } from './persona.js';
 import { localAnswer } from './fallback.js';
 import { guestbook } from './guestbook.js';
 import { booking } from './booking.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 app.use(cors());
@@ -81,6 +86,20 @@ app.post('/api/chat', async (req, res) => {
     res.json({ reply: localAnswer(messages, langHint), mode: 'local-fallback' });
   }
 });
+
+// In production the built frontend (dist/) is served by this same process, so a
+// single container serves both the SPA and the /api backend. In dev this folder
+// doesn't exist (Vite serves the UI on :3000 and proxies /api here), so we skip.
+const distDir = path.resolve(__dirname, '../dist');
+if (fs.existsSync(distDir)) {
+  app.use(express.static(distDir));
+  // SPA fallback for client-side routes (/guestbook, /book, /links …) — but
+  // never swallow /api/* requests.
+  app.get(/^\/(?!api\/).*/, (_req, res) => {
+    res.sendFile(path.join(distDir, 'index.html'));
+  });
+  console.log('[server] serving built frontend from', distDir);
+}
 
 app.listen(PORT, () => {
   console.log(`[server] AI proxy listening on http://localhost:${PORT}`);
