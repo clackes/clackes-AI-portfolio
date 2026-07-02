@@ -1,0 +1,170 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  /* Design tokens mirrored from the reference (dark theme). */
+  --background: #0a0a0f;
+  --foreground: #e4e4e7;
+  --card: #18181b;
+  --card-border: #27272a;
+  --muted: #a1a1aa;
+  --accent: #3b82f6;
+  --accent-hover: #60a5fa;
+  --gradient-start: #3b82f6;
+  --gradient-end: #22d3ee;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Glowing blue dot pattern behind everything — same accent hue as the sphere.
+   `isolation: isolate` on body creates a local stacking context so ::before
+   with z-index: -1 sits above the base bg but below every real section. */
+body {
+  isolation: isolate;
+  position: relative;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(59, 130, 246, 0.22) 1px, transparent 1.4px);
+  background-size: 20px 20px;
+  background-position: 0 0;
+  /* fade the pattern toward the edges of the viewport so headlines stay
+     legible and the effect never feels like a wallpaper */
+  -webkit-mask-image: radial-gradient(120% 90% at 50% 40%, black 30%, transparent 95%);
+  mask-image: radial-gradient(120% 90% at 50% 40%, black 30%, transparent 95%);
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+::selection {
+  background: #3b82f6;
+  color: #fff;
+}
+
+/* Keyboard focus — visible ring, never on mouse click */
+:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Skip link — hidden until focused */
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: -100px;
+  z-index: 100;
+  border-radius: 0.5rem;
+  background: #fff;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #09090b;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* Respect reduced-motion for CSS transitions/animations too */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Thin custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .grain {
+    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.04) 1px, transparent 0);
+    background-size: 4px 4px;
+  }
+  /* indigo→pink gradient text, matching the reference accent headings */
+  .gradient-text {
+    background-image: linear-gradient(120deg, var(--gradient-start), var(--gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .gradient-shimmer {
+    background-image: linear-gradient(
+      120deg,
+      var(--gradient-start),
+      var(--gradient-end),
+      var(--gradient-start)
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer-gradient 6s ease infinite;
+  }
+  .font-mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+  }
+}
+
+@keyframes shimmer-gradient {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
