@@ -98,14 +98,19 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
   const wireFrontRefs = useRef<(SVGPathElement | null)[]>([]);
   const wireBackRefs = useRef<(SVGPathElement | null)[]>([]);
 
-  // Deterministic per-icon entry: alternate sides, jitter vertical start position.
+  // Deterministic per-icon entry. About a third of the icons sit permanently
+  // on the sphere (no fly-in — they're just always there); the rest fly in
+  // from a full spread of directions around the screen (not just the two
+  // sides), each from a different angle so they converge on the sphere from
+  // all over instead of two straight lines.
   const entries = useMemo(
     () =>
       skills.map((_, i) => {
-        const sideSign = i % 2 === 0 ? -1 : 1; // -1 = left edge, +1 = right edge
-        // Pseudo-random 0..1 from index — gives a natural spread on Y without RNG.
-        const yFrac = (Math.sin(i * 12.9898 + 78.233) * 0.5 + 0.5) * 0.85 + 0.075;
-        return { sideSign, yFrac };
+        // Pseudo-random 0..1 from index — deterministic "randomness" without an RNG.
+        const rand = (seed: number) => Math.sin(i * 12.9898 + seed) * 0.5 + 0.5;
+        const alwaysOnSphere = rand(37.1) < 0.3;
+        const angle = rand(78.233) * Math.PI * 2;
+        return { alwaysOnSphere, angle };
       }),
     [skills],
   );
@@ -177,6 +182,10 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
     const tilt = BASE_TILT; // fixed — the sphere no longer tilts toward the cursor
     let lastScrollY = window.scrollY;
     let scrollSpin = 0; // eased extra angular velocity from scrolling
+    // assembly.current jumps directly with scroll position, which can arrive
+    // in small discrete steps depending on input device/browser. Smooth it
+    // over time here so the fly-in always glides rather than ever ticking.
+    let assemblyEased = assembly.current;
 
     const render = () => {
       const { w, h } = dims.current;
@@ -198,7 +207,8 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
       const cosA = Math.cos(angleY);
       const sinA = Math.sin(angleY);
 
-      const a = easeOut(assembly.current);
+      assemblyEased += (assembly.current - assemblyEased) * (reduced ? 1 : 0.09);
+      const a = easeOut(assemblyEased);
       const inv = 1 - a;
 
       for (let i = 0; i < base.length; i++) {
@@ -220,19 +230,32 @@ export function SkillSphere({ skills, className = '' }: { skills: Skill[]; class
         const sphereX = cx + x2 * radius;
         const sphereY = cy + y2 * radius;
 
-        // Entry origin — far off to the container's left or right, so the icon
-        // enters from outside the viewport. Vertical position is jittered per icon.
         const entry = entries[i];
-        const startX = entry.sideSign > 0 ? w * 1.6 : -w * 0.6;
-        const startY = h * entry.yFrac;
-
-        const posX = startX + (sphereX - startX) * a;
-        const posY = startY + (sphereY - startY) * a;
-
-        // While flying, icons stay crisp + full-colour; ease into depth cues.
-        const flyScale = 1.15;
-        let finalScale = flyScale * inv + scale * a;
-        const finalOpacity = inv * 1 + a * opacity;
+        let posX: number;
+        let posY: number;
+        let finalScale: number;
+        let finalOpacity: number;
+        if (entry.alwaysOnSphere) {
+          // This icon skips the fly-in entirely — always seated on the
+          // sphere, rotating with it from the very first frame.
+          posX = sphereX;
+          posY = sphereY;
+          finalScale = scale;
+          finalOpacity = opacity;
+        } else {
+          // Entry origin — a point well outside the screen in this icon's
+          // own direction (full 360° spread, not just the two sides), so
+          // icons converge on the sphere from all around the screen.
+          const R = Math.max(w, h) * 1.3;
+          const startX = cx + Math.cos(entry.angle) * R;
+          const startY = cy + Math.sin(entry.angle) * R;
+          posX = startX + (sphereX - startX) * a;
+          posY = startY + (sphereY - startY) * a;
+          // While flying, icons stay crisp + full-colour; ease into depth cues.
+          const flyScale = 1.15;
+          finalScale = flyScale * inv + scale * a;
+          finalOpacity = inv * 1 + a * opacity;
+        }
 
         // Ease this icon's hover state — grows + glows smoothly instead of
         // snapping, and doesn't fight the per-frame transform writes the way
