@@ -6,12 +6,15 @@ export type Skill = { name: string; Icon: IconType; color: string };
 
 type Vec3 = { x: number; y: number; z: number };
 
-// Even distribution of N points on a unit sphere (Fibonacci lattice).
+// Even distribution of N points on a unit sphere (Fibonacci lattice). Kept
+// away from the exact poles (y = ±1) — rotation is around the Y axis, so a
+// point sitting right at a pole barely moves at all and reads as "stuck"
+// instead of orbiting like every other icon.
 function fibonacciSphere(n: number): Vec3[] {
   const pts: Vec3[] = [];
   const golden = Math.PI * (3 - Math.sqrt(5));
   for (let i = 0; i < n; i++) {
-    const y = 1 - (i / Math.max(1, n - 1)) * 2; // 1 → -1
+    const y = 0.92 - (i / Math.max(1, n - 1)) * 1.84; // 0.92 → -0.92
     const r = Math.sqrt(Math.max(0, 1 - y * y));
     const theta = golden * i;
     pts.push({ x: Math.cos(theta) * r, y, z: Math.sin(theta) * r });
