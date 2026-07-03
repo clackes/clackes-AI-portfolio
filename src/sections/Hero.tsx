@@ -79,15 +79,19 @@ export function Hero() {
               real alpha channel in mp4/webm). "screen" blend mode makes true
               black contribute nothing to the composite, so it reads as
               transparent against the page's near-black background instead of
-              a visible dark disc. */}
+              a visible dark disc. Because screen blending adds brightness
+              rather than replacing it, the poster has to fully disappear
+              (not just sit underneath) once the video is ready, or the two
+              faces visibly double-expose on top of each other. */}
           <img
             src="/avatar-poster.webp"
             alt=""
             aria-hidden
             className="absolute inset-0 h-full w-full object-cover mix-blend-screen"
+            style={{ opacity: videoReady ? 0 : 1 }}
           />
           <video
-            className="absolute inset-0 h-full w-full object-cover mix-blend-screen transition-opacity duration-300"
+            className="absolute inset-0 h-full w-full object-cover mix-blend-screen"
             style={{ opacity: videoReady ? 1 : 0 }}
             autoPlay
             loop
