@@ -1,12 +1,11 @@
 import type { IconType } from 'react-icons';
 import { Reveal } from '@/components/Reveal';
 import { SkillSphere, type Skill } from '@/components/SkillSphere';
-import { Code2 } from 'lucide-react';
 import { useT } from '@/i18n';
 import {
   SiPython, SiJavascript, SiTypescript, SiC, SiCplusplus, SiHtml5, SiCss, SiGnubash,
   SiReact, SiNextdotjs, SiNodedotjs, SiBootstrap,
-  SiMysql, SiMongodb, SiRedis, SiDocker, SiGit,
+  SiMysql, SiMongodb, SiDocker, SiGit,
   SiGithub, SiCursor, SiIntellijidea, SiPostman,
 } from 'react-icons/si';
 
@@ -43,12 +42,12 @@ const SKILLS: Skill[] = [
   { name: 'MySQL', Icon: SiMysql, color: '#4479A1' },
   { name: 'PostgreSQL', Icon: imgIcon('/skill-logos/postgresql.webp'), color: '#4169E1' },
   { name: 'MongoDB', Icon: SiMongodb, color: '#47A248' },
-  { name: 'Redis', Icon: SiRedis, color: '#DC382D' },
+  { name: 'Redis', Icon: imgIcon('/skill-logos/redis.webp'), color: '#DC382D' },
   { name: 'Docker', Icon: SiDocker, color: '#2496ED' },
   { name: 'Git', Icon: SiGit, color: '#F05032' },
   { name: 'GitHub', Icon: SiGithub, color: '#ffffff' },
   { name: 'Linux', Icon: imgIcon('/skill-logos/linux.webp'), color: '#FCC624' },
-  { name: 'VS Code', Icon: Code2, color: '#007ACC' },
+  { name: 'VS Code', Icon: imgIcon('/skill-logos/vscode.webp'), color: '#007ACC' },
   { name: 'Cursor', Icon: SiCursor, color: '#ffffff' },
   { name: 'IntelliJ IDEA', Icon: SiIntellijidea, color: '#087CFA' },
   { name: 'Figma', Icon: imgIcon('/skill-logos/figma.svg'), color: '#F24E1E' },
