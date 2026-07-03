@@ -10,6 +10,7 @@ import { Footer } from '@/sections/Footer';
 import { Guestbook } from '@/sections/Guestbook';
 import { BookCall } from '@/sections/BookCall';
 import { Links } from '@/sections/Links';
+import { Sponsor } from '@/sections/Sponsor';
 import { GetInTouch } from '@/components/GetInTouch';
 import { useT } from '@/i18n';
 
@@ -31,6 +32,8 @@ export default function App() {
     page = <BookCall />;
   } else if (path === '/links') {
     page = <Links />;
+  } else if (path === '/sponsor') {
+    page = <Sponsor />;
   } else {
     page = (
       <>

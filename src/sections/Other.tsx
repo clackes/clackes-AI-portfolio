@@ -30,7 +30,7 @@ const cards: Card[] = [
     icon: Heart,
     titleKey: 'other.sponsor.title',
     descKey: 'other.sponsor.desc',
-    href: 'https://github.com/sponsors/clackes',
+    href: '/sponsor',
     from: '#ec4899',
     to: '#ef4444',
     solid: '#ec4899',

@@ -79,7 +79,7 @@ const en: Dict = {
   'other.guestbook.title': 'Guestbook',
   'other.guestbook.desc': 'Leave your mark and see what others have to say',
   'other.sponsor.title': 'Sponsor',
-  'other.sponsor.desc': 'Support my open-source work on GitHub',
+  'other.sponsor.desc': 'Support my work via GitHub or PayPal',
   'other.links.title': 'My Links',
   'other.links.desc': 'Find me across the web and social platforms',
 
@@ -160,6 +160,14 @@ const en: Dict = {
   'links.title.pre': 'My ',
   'links.title.accent': 'Links',
   'links.subtitle': 'Find me across the web and social platforms',
+
+  // Sponsor page
+  'sponsor.eyebrow': 'Say thanks',
+  'sponsor.title.pre': 'Support ',
+  'sponsor.title.accent': 'my work',
+  'sponsor.subtitle': "If something here helped you out, here's how to say thanks.",
+  'sponsor.github.desc': 'One-off or monthly, billed through GitHub',
+  'sponsor.paypal.desc': 'A quick one-time thank-you',
 };
 
 const it: Dict = {
@@ -237,7 +245,7 @@ const it: Dict = {
   'other.guestbook.title': 'Guestbook',
   'other.guestbook.desc': 'Lascia il tuo segno e leggi cosa dicono gli altri',
   'other.sponsor.title': 'Sponsor',
-  'other.sponsor.desc': 'Sostieni il mio lavoro open-source su GitHub',
+  'other.sponsor.desc': 'Sostienimi via GitHub o PayPal',
   'other.links.title': 'I miei link',
   'other.links.desc': 'Trovami sul web e sui social',
 
@@ -318,6 +326,14 @@ const it: Dict = {
   'links.title.pre': 'I miei ',
   'links.title.accent': 'Link',
   'links.subtitle': 'Trovami sul web e sui social',
+
+  // Sponsor page
+  'sponsor.eyebrow': 'Un grazie',
+  'sponsor.title.pre': 'Sostieni ',
+  'sponsor.title.accent': 'il mio lavoro',
+  'sponsor.subtitle': 'Se qualcosa qui ti è stato utile, ecco come ringraziarmi.',
+  'sponsor.github.desc': 'Una tantum o mensile, tramite GitHub',
+  'sponsor.paypal.desc': 'Un grazie veloce, una tantum',
 };
 
 const dicts: Record<Lang, Dict> = { en, it };
