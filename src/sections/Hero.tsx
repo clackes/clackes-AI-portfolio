@@ -20,6 +20,12 @@ export function Hero() {
   const [q, setQ] = useState('');
   const [messages, setMessages] = useState<Msg[]>([]);
   const [loading, setLoading] = useState(false);
+  // Browsers paint <video> as an opaque black rectangle until a frame is
+  // ready, regardless of CSS background — poster helps but can itself still
+  // be loading for a moment. Keep the video invisible and show a real <img>
+  // underneath instead, so there's never a black flash, only ever the poster
+  // photo cross-fading into the playing video.
+  const [videoReady, setVideoReady] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -69,8 +75,15 @@ export function Hero() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="relative top-12 mb-2 h-40 w-40 overflow-hidden rounded-full sm:h-48 sm:w-48"
         >
+          <img
+            src="/avatar-poster.webp"
+            alt=""
+            aria-hidden
+            className="absolute inset-0 h-full w-full object-cover"
+          />
           <video
-            className="h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover transition-opacity duration-300"
+            style={{ opacity: videoReady ? 1 : 0 }}
             autoPlay
             loop
             muted
@@ -78,6 +91,7 @@ export function Hero() {
             preload="auto"
             poster="/avatar-poster.webp"
             aria-label={`${profile.name} avatar`}
+            onLoadedData={() => setVideoReady(true)}
           >
             <source src="/avatar.webm" type="video/webm" />
             <source src="/avatar.mp4" type="video/mp4" />
