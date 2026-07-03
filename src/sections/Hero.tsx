@@ -75,14 +75,19 @@ export function Hero() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="relative top-12 mb-2 h-40 w-40 overflow-hidden rounded-full sm:h-48 sm:w-48"
         >
+          {/* The source video/poster has a pure #000 background baked in (no
+              real alpha channel in mp4/webm). "screen" blend mode makes true
+              black contribute nothing to the composite, so it reads as
+              transparent against the page's near-black background instead of
+              a visible dark disc. */}
           <img
             src="/avatar-poster.webp"
             alt=""
             aria-hidden
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover mix-blend-screen"
           />
           <video
-            className="absolute inset-0 h-full w-full object-cover transition-opacity duration-300"
+            className="absolute inset-0 h-full w-full object-cover mix-blend-screen transition-opacity duration-300"
             style={{ opacity: videoReady ? 1 : 0 }}
             autoPlay
             loop

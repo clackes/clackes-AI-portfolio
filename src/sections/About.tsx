@@ -377,9 +377,13 @@ function Mindset({
 // Craft in the mobile bento (matches the reference's bottom-left photo tile).
 function AvatarCard({ className = '' }: { className?: string }) {
   return (
-    <div className={`relative overflow-hidden rounded-2xl border border-card-border bg-black ${className}`}>
+    <div className={`relative overflow-hidden rounded-2xl border border-card-border ${className}`}>
+      {/* Source video has a pure #000 background baked in (no real alpha
+          channel in mp4/webm); "screen" blend mode makes true black
+          contribute nothing, so it reads as transparent instead of a black
+          box — no bg-black on the card itself either, for the same reason. */}
       <video
-        className="h-full w-full object-cover"
+        className="h-full w-full object-cover mix-blend-screen"
         autoPlay
         loop
         muted
