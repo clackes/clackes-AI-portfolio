@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { Reveal } from '@/components/Reveal';
-import { BookOpen, Trophy, Link2, ArrowRight } from 'lucide-react';
+import { BookOpen, Heart, Link2, ArrowRight } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { navigate } from '@/lib/nav';
 import { useT } from '@/i18n';
@@ -27,13 +27,13 @@ const cards: Card[] = [
     solid: '#8b5cf6',
   },
   {
-    icon: Trophy,
-    titleKey: 'other.achievements.title',
-    descKey: 'other.achievements.desc',
-    href: '#work',
-    from: '#f59e0b',
-    to: '#f97316',
-    solid: '#f59e0b',
+    icon: Heart,
+    titleKey: 'other.sponsor.title',
+    descKey: 'other.sponsor.desc',
+    href: 'https://github.com/sponsors/clackes',
+    from: '#ec4899',
+    to: '#ef4444',
+    solid: '#ec4899',
   },
   {
     icon: Link2,

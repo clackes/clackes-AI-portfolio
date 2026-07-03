@@ -78,8 +78,8 @@ const en: Dict = {
   'other.explore': 'Explore',
   'other.guestbook.title': 'Guestbook',
   'other.guestbook.desc': 'Leave your mark and see what others have to say',
-  'other.achievements.title': 'Achievements',
-  'other.achievements.desc': 'Milestones, certifications, and accomplishments',
+  'other.sponsor.title': 'Sponsor',
+  'other.sponsor.desc': 'Support my open-source work on GitHub',
   'other.links.title': 'My Links',
   'other.links.desc': 'Find me across the web and social platforms',
 
@@ -236,8 +236,8 @@ const it: Dict = {
   'other.explore': 'Esplora',
   'other.guestbook.title': 'Guestbook',
   'other.guestbook.desc': 'Lascia il tuo segno e leggi cosa dicono gli altri',
-  'other.achievements.title': 'Traguardi',
-  'other.achievements.desc': 'Traguardi, certificazioni e risultati',
+  'other.sponsor.title': 'Sponsor',
+  'other.sponsor.desc': 'Sostieni il mio lavoro open-source su GitHub',
   'other.links.title': 'I miei link',
   'other.links.desc': 'Trovami sul web e sui social',
 
