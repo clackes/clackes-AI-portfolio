@@ -6,7 +6,7 @@ import {
   SiPython, SiJavascript, SiTypescript, SiC, SiCplusplus, SiHtml5, SiCss, SiGnubash,
   SiReact, SiNextdotjs, SiNodedotjs, SiBootstrap,
   SiMysql, SiMongodb, SiDocker, SiGit,
-  SiGithub, SiCursor, SiIntellijidea, SiPostman,
+  SiGithub, SiCursor, SiIntellijidea, SiPostman, SiLinear,
 } from 'react-icons/si';
 
 // A handful of brand logos render better as the real image (exact official
@@ -52,6 +52,7 @@ const SKILLS: Skill[] = [
   { name: 'IntelliJ IDEA', Icon: SiIntellijidea, color: '#087CFA' },
   { name: 'Figma', Icon: imgIcon('/skill-logos/figma.svg'), color: '#F24E1E' },
   { name: 'Postman', Icon: SiPostman, color: '#FF6C37' },
+  { name: 'Linear', Icon: SiLinear, color: '#5E6AD2' },
   { name: 'Hugging Face', Icon: imgIcon('/skill-logos/huggingface.webp'), color: '#FFD21E' },
 ];
 
