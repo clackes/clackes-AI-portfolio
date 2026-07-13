@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import { motion } from 'motion/react';
 import { Heart, ArrowLeft, ExternalLink } from 'lucide-react';
-import { SiGithub, SiPaypal } from 'react-icons/si';
+import { SiGithub, SiPaypal, SiBuymeacoffee } from 'react-icons/si';
 import type { IconType } from 'react-icons';
 import { useT } from '@/i18n';
 import { navigate } from '@/lib/nav';
@@ -23,6 +23,13 @@ const items: SponsorItem[] = [
     href: 'https://www.paypal.me/AlbertoVerganiclk',
     Icon: SiPaypal,
     color: '#0070BA',
+  },
+  {
+    label: 'Buy Me a Coffee',
+    descKey: 'sponsor.bmc.desc',
+    href: 'https://buymeacoffee.com/albertovergani',
+    Icon: SiBuymeacoffee,
+    color: '#FFDD00',
   },
 ];
 

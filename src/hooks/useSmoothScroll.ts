@@ -1,19 +1,6 @@
 import { useEffect } from 'react';
 import Lenis from 'lenis';
 
-// Single active Lenis instance, exposed so overlays/modals can pause it.
-let lenisInstance: Lenis | null = null;
-
-/** Pause Lenis so a fixed overlay can scroll natively (call when a modal opens). */
-export function pauseSmoothScroll() {
-  lenisInstance?.stop();
-}
-
-/** Resume Lenis (call when the modal closes). */
-export function resumeSmoothScroll() {
-  lenisInstance?.start();
-}
-
 /**
  * Lenis-powered smooth scrolling, matching the Aizen template feel.
  * Mounts once and drives a single requestAnimationFrame loop.
@@ -31,8 +18,6 @@ export function useSmoothScroll() {
       easing: (t) => 1 - Math.pow(1 - t, 3),
       smoothWheel: true,
     });
-    lenisInstance = lenis;
-
     let frame = 0;
     const raf = (time: number) => {
       lenis.raf(time);
@@ -58,7 +43,6 @@ export function useSmoothScroll() {
       cancelAnimationFrame(frame);
       document.removeEventListener('click', onClick);
       lenis.destroy();
-      lenisInstance = null;
     };
   }, []);
 }

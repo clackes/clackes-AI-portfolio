@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Reveal } from '@/components/Reveal';
+import Stack from '@/components/Stack';
 import { profile, principles } from '@/data/content';
 import { useT } from '@/i18n';
 import type { IconType } from 'react-icons';
@@ -245,33 +245,41 @@ function Mindset({
   const t = useT();
   const reduced = useReducedMotion();
   const photos = mindsetPhotos;
-  const count = photos.length;
-  const [active, setActive] = useState(0);
-  const [paused, setPaused] = useState(false);
 
-  const go = (dir: number) => setActive((a) => (a + dir + count) % count);
-
-  // Auto-advance every 3.5s; pause on hover and when reduced-motion is set.
-  useEffect(() => {
-    if (reduced || paused || count <= 1 || !showCarousel) return;
-    const id = window.setInterval(() => setActive((a) => (a + 1) % count), 3500);
-    return () => window.clearInterval(id);
-  }, [reduced, paused, count, showCarousel]);
-
-  const slots =
-    count > 0
-      ? [
-          { side: 'left' as const, i: (active - 1 + count) % count },
-          { side: 'center' as const, i: active },
-          { side: 'right' as const, i: (active + 1) % count },
-        ]
-      : [];
+  // Build the draggable stack cards from the same mindset photos as before.
+  // Memoised so the array identity is stable across renders (only the language,
+  // which changes captions, rebuilds it) — otherwise <Stack> would reset on
+  // every render.
+  const cards = useMemo(
+    () =>
+      photos.map((photo) => {
+        const captionKey = `about.mindset.photo.${photo.key}`;
+        const translated = t(captionKey);
+        const label = translated === captionKey ? photo.fallback : translated;
+        return (
+          <div className="relative h-full w-full overflow-hidden rounded-2xl border-2 border-accent/30">
+            <img
+              src={photo.src}
+              alt={label || 'Mindset'}
+              loading="lazy"
+              draggable={false}
+              className="h-full w-full object-cover"
+              style={{ objectPosition: photo.position }}
+            />
+            {label && (
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-2 pt-8">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-white md:text-xs">{label}</span>
+              </div>
+            )}
+          </div>
+        );
+      }),
+    [photos, t],
+  );
 
   return (
     <div
       className={`group relative flex h-full w-full flex-col overflow-hidden rounded-2xl border border-card-border bg-gradient-to-br from-card to-card-border backdrop-blur-sm transition-colors duration-300 hover:border-accent/60 ${className}`}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
     >
       {showIntro && (
         <div className="z-20 flex shrink-0 flex-col gap-2 p-4 pb-2 md:p-5 md:pb-0">
@@ -287,80 +295,23 @@ function Mindset({
 
       {showCarousel && (
       <>
-      <div className="relative flex flex-1 items-center justify-center overflow-hidden px-2 py-3 md:py-4" style={{ perspective: 1000 }}>
-        <div className="relative flex h-full min-h-[150px] w-full items-center justify-center">
-          {slots.map(({ side, i }) => {
-            const center = side === 'center';
-            const photo = photos[i];
-            // Translated caption; falls back to the filename-derived label when
-            // no i18n entry exists for this photo yet.
-            const captionKey = `about.mindset.photo.${photo.key}`;
-            const translated = t(captionKey);
-            const label = translated === captionKey ? photo.fallback : translated;
-            const transform =
-              side === 'left'
-                ? 'translateX(-52%) rotateY(22deg)'
-                : side === 'right'
-                  ? 'translateX(52%) rotateY(-22deg)'
-                  : 'none';
-            return (
-              <div
-                key={side}
-                className={`aspect-[3/4] overflow-hidden rounded-xl border transition-all duration-500 md:rounded-2xl ${
-                  center
-                    ? 'relative w-[55%] border-2 border-accent/30 shadow-2xl md:w-[50%]'
-                    : 'absolute w-[45%] border-card-border/50 shadow-lg md:w-[42%]'
-                }`}
-                style={{ transform, zIndex: center ? 10 : 1, opacity: center ? 1 : 0.5, filter: center ? 'none' : 'blur(1px) grayscale(30%)' }}
-              >
-                <img src={photo.src} alt={label || 'Mindset'} loading="lazy" className="h-full w-full object-cover" style={{ objectPosition: photo.position }} />
-                {center && label && (
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-2 pt-8">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-white md:text-xs">{label}</span>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-
-          {/* prev / next controls */}
-          {count > 1 && (
-            <>
-              <button
-                type="button"
-                onClick={() => go(-1)}
-                aria-label="Previous photo"
-                className="absolute left-1 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-card-border bg-card/80 text-foreground/80 backdrop-blur transition-colors hover:border-accent/60 hover:text-white"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => go(1)}
-                aria-label="Next photo"
-                className="absolute right-1 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-card-border bg-card/80 text-foreground/80 backdrop-blur transition-colors hover:border-accent/60 hover:text-white"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </>
-          )}
+      {/* Draggable card stack — same footprint as the old coverflow: a 3:4
+          portrait card centred in the flex-1 area. Drag / click / autoplay
+          cycle through the photos. */}
+      <div className="relative flex flex-1 items-center justify-center px-2 py-4">
+        <div className="aspect-[3/4] w-[58%] max-w-[170px] min-h-[150px]">
+          <Stack
+            cards={cards}
+            randomRotation
+            sensitivity={160}
+            sendToBackOnClick
+            autoplay={!reduced}
+            autoplayDelay={3500}
+            pauseOnHover
+            animationConfig={{ stiffness: 260, damping: 20 }}
+          />
         </div>
       </div>
-
-      {/* dots */}
-      {count > 1 && (
-        <div className="z-20 flex shrink-0 items-center justify-center gap-1.5 pb-2">
-          {photos.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => setActive(i)}
-              aria-label={`Go to photo ${i + 1}`}
-              className={`h-1.5 rounded-full transition-all ${i === active ? 'w-4 bg-accent' : 'w-1.5 bg-card-border hover:bg-muted'}`}
-            />
-          ))}
-        </div>
-      )}
 
       <div className="z-20 hidden shrink-0 border-t border-card-border/30 p-3 pt-0 md:block md:p-3.5 md:pt-0">
         <p className="text-base leading-relaxed text-muted">

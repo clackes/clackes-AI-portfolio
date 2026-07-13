@@ -29,7 +29,7 @@ const en: Dict = {
   'hero.quick.skills': 'Skills',
   'hero.quick.contact': 'Contact',
 
-  'about.role': 'Developer · AI Engineer · Social Media',
+  'about.role': 'Developer · AI Builder · Social Media',
 
   'about.principles.hint': 'Hover to read more',
   'about.principles.01.title': "I don't give up",
@@ -79,7 +79,7 @@ const en: Dict = {
   'other.guestbook.title': 'Guestbook',
   'other.guestbook.desc': 'Leave your mark and see what others have to say',
   'other.sponsor.title': 'Sponsor',
-  'other.sponsor.desc': 'Support my work via GitHub or PayPal',
+  'other.sponsor.desc': 'Support my work via GitHub, PayPal or Buy Me a Coffee',
   'other.links.title': 'My Links',
   'other.links.desc': 'Find me across the web and social platforms',
 
@@ -168,6 +168,7 @@ const en: Dict = {
   'sponsor.subtitle': "If something here helped you out, here's how to say thanks.",
   'sponsor.github.desc': 'One-off or monthly, billed through GitHub',
   'sponsor.paypal.desc': 'A quick one-time thank-you',
+  'sponsor.bmc.desc': 'Buy me a coffee to say thanks',
 };
 
 const it: Dict = {
@@ -195,7 +196,7 @@ const it: Dict = {
   'hero.quick.skills': 'Competenze',
   'hero.quick.contact': 'Contatti',
 
-  'about.role': 'Sviluppatore · AI Engineer · Social Media',
+  'about.role': 'Sviluppatore · AI Builder · Social Media',
 
   'about.principles.hint': 'Passa il mouse per leggere',
   'about.principles.01.title': 'Non mollo mai',
@@ -245,7 +246,7 @@ const it: Dict = {
   'other.guestbook.title': 'Guestbook',
   'other.guestbook.desc': 'Lascia il tuo segno e leggi cosa dicono gli altri',
   'other.sponsor.title': 'Sponsor',
-  'other.sponsor.desc': 'Sostienimi via GitHub o PayPal',
+  'other.sponsor.desc': 'Sostienimi via GitHub, PayPal o Buy Me a Coffee',
   'other.links.title': 'I miei link',
   'other.links.desc': 'Trovami sul web e sui social',
 
@@ -334,6 +335,7 @@ const it: Dict = {
   'sponsor.subtitle': 'Se qualcosa qui ti è stato utile, ecco come ringraziarmi.',
   'sponsor.github.desc': 'Una tantum o mensile, tramite GitHub',
   'sponsor.paypal.desc': 'Un grazie veloce, una tantum',
+  'sponsor.bmc.desc': 'Offrimi un caffè per ringraziarmi',
 };
 
 const dicts: Record<Lang, Dict> = { en, it };

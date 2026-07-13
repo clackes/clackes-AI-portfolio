@@ -2,7 +2,7 @@ export const profile = {
   name: 'Alberto Vergani',
   brand: 'Alberto Vergani',
   initials: 'AV',
-  role: 'Developer · AI Engineer · Social Media',
+  role: 'Developer · AI Builder · Social Media',
   tagline: 'Built end to end. Made to travel.',
   location: 'Italy · Switzerland · Online',
   // placeholders — replace with your real handles once the new accounts exist

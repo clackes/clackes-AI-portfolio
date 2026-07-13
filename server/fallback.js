@@ -4,8 +4,8 @@
 
 const FACTS_EN = {
   who: [
-    "Alberto Vergani is a Developer, AI Engineer and Social Media creator — a Computer Engineering student at SUPSI in Lugano, Switzerland. He builds full-stack products with AI and engineers short-form video that performs on Instagram and TikTok.",
-    "Alberto is a full-stack developer and AI engineer based between Italy and Switzerland. He ships web apps end-to-end and runs short-form video for the same brands.",
+    "Alberto Vergani is a developer and Social Media creator — a first-year Computer Engineering student at SUPSI in Lugano, Switzerland. He builds full-stack products with AI and engineers short-form video that performs on Instagram and TikTok.",
+    "Alberto is a full-stack developer who builds with AI, based between Italy and Switzerland. He ships web apps end-to-end and runs short-form video for the same brands.",
   ],
   projects:
     "Two featured projects on the site: Kcal Tracker — a PWA calorie tracker that reads a meal from a photo (FastAPI, PostgreSQL, React, TypeScript, Gemini); and Baumarine — a website for an Italian luxury yacht shipyard on Lake Iseo, where Alberto did design, art direction and copy (WordPress).",
@@ -47,8 +47,8 @@ const FACTS_EN = {
 
 const FACTS_IT = {
   who: [
-    "Alberto Vergani è Developer, AI Engineer e Social Media creator — studente di Ingegneria Informatica alla SUPSI di Lugano. Costruisce prodotti full-stack con l'AI e produce short-form video che performano su Instagram e TikTok.",
-    "Alberto è uno sviluppatore full-stack e AI engineer che vive tra Italia e Svizzera. Realizza web app end-to-end e cura anche i social delle stesse aziende.",
+    "Alberto Vergani è sviluppatore e Social Media creator — studente al primo anno di Ingegneria Informatica alla SUPSI di Lugano. Costruisce prodotti full-stack con l'AI e produce short-form video che performano su Instagram e TikTok.",
+    "Alberto è uno sviluppatore full-stack che costruisce con l'AI e vive tra Italia e Svizzera. Realizza web app end-to-end e cura anche i social delle stesse aziende.",
   ],
   projects:
     "Due progetti in evidenza sul sito: Kcal Tracker — un contatore di calorie PWA che riconosce il pasto da una foto (FastAPI, PostgreSQL, React, TypeScript, Gemini); e Baumarine — sito per un cantiere di yacht di lusso sul Lago d'Iseo, dove Alberto ha fatto design, direzione artistica e copy (WordPress).",

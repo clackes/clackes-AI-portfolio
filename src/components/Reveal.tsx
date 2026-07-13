@@ -1,7 +1,5 @@
 import { motion, useReducedMotion } from 'motion/react';
 import type { ReactNode } from 'react';
-import { profile } from '@/data/content';
-import { useT } from '@/i18n';
 
 type RevealProps = {
   children: ReactNode;
@@ -23,26 +21,5 @@ export function Reveal({ children, delay = 0, y = 26, className }: RevealProps) 
     >
       {children}
     </motion.div>
-  );
-}
-
-/** Small parenthesized eyebrow label, e.g. ( About ). */
-export function Label({ children }: { children: ReactNode }) {
-  const t = useT();
-  return (
-    <span className="text-[11px] uppercase tracking-[0.25em] text-zinc-400">
-      ( {typeof children === 'string' ? t(children) : children} )
-    </span>
-  );
-}
-
-/** Heavy italic wordmark used for the brand and footer. */
-export function Wordmark({ className = '' }: { className?: string }) {
-  return (
-    <span
-      className={`font-display font-black uppercase italic tracking-tightest text-white ${className}`}
-    >
-      {profile.brand}
-    </span>
   );
 }
