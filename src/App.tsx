@@ -11,6 +11,7 @@ import { Guestbook } from '@/sections/Guestbook';
 import { BookCall } from '@/sections/BookCall';
 import { Links } from '@/sections/Links';
 import { Sponsor } from '@/sections/Sponsor';
+import { Legal } from '@/sections/Legal';
 import { GetInTouch } from '@/components/GetInTouch';
 import { useT } from '@/i18n';
 
@@ -34,6 +35,10 @@ export default function App() {
     page = <Links />;
   } else if (path === '/sponsor') {
     page = <Sponsor />;
+  } else if (path === '/privacy') {
+    page = <Legal kind="privacy" />;
+  } else if (path === '/terms') {
+    page = <Legal kind="terms" />;
   } else {
     page = (
       <>

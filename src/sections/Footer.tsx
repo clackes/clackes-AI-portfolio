@@ -3,6 +3,7 @@ import { profile } from '@/data/content';
 import { GithubCalendar } from '@/components/ui/retro-space-shooter-git-hub-calendar';
 import { ArrowUpRight, Mail } from 'lucide-react';
 import { useT } from '@/i18n';
+import { navigate } from '@/lib/nav';
 
 // Pull the GitHub handle out of the socials list, e.g. "@clackes" -> "clackes".
 const githubHandle =
@@ -94,6 +95,12 @@ export function Footer() {
             <a href="#about" className="hover:text-foreground">{t('footer.nav.about')}</a>
             <a href="#skills" className="hover:text-foreground">{t('footer.nav.skills')}</a>
             <a href="#work" className="hover:text-foreground">{t('footer.nav.work')}</a>
+            <button type="button" onClick={() => navigate('/privacy')} className="uppercase tracking-widest hover:text-foreground">
+              {t('footer.nav.privacy')}
+            </button>
+            <button type="button" onClick={() => navigate('/terms')} className="uppercase tracking-widest hover:text-foreground">
+              {t('footer.nav.terms')}
+            </button>
           </nav>
 
           <p className="font-mono text-[11px] text-muted">

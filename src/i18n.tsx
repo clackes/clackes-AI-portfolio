@@ -88,6 +88,8 @@ const en: Dict = {
   'footer.nav.about': 'About',
   'footer.nav.skills': 'Skills',
   'footer.nav.work': 'Work',
+  'footer.nav.privacy': 'Privacy',
+  'footer.nav.terms': 'Terms',
   'footer.nav.contact': 'Contact',
 
   'guest.back': 'Back to home',
@@ -255,6 +257,8 @@ const it: Dict = {
   'footer.nav.about': 'Chi sono',
   'footer.nav.skills': 'Competenze',
   'footer.nav.work': 'Progetti',
+  'footer.nav.privacy': 'Privacy',
+  'footer.nav.terms': 'Termini',
   'footer.nav.contact': 'Contatti',
 
   'guest.back': 'Torna alla home',
