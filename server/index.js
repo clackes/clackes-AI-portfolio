@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import express from 'express';
 import cors from 'cors';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { renderShell } from './prerender.js';
 import { PERSONA } from './persona.js';
 import { localAnswer } from './fallback.js';
 import { guestbook } from './guestbook.js';
@@ -92,11 +93,17 @@ app.post('/api/chat', async (req, res) => {
 // doesn't exist (Vite serves the UI on :3000 and proxies /api here), so we skip.
 const distDir = path.resolve(__dirname, '../dist');
 if (fs.existsSync(distDir)) {
-  app.use(express.static(distDir));
-  // SPA fallback for client-side routes (/guestbook, /book, /links …) — but
-  // never swallow /api/* requests.
-  app.get(/^\/(?!api\/).*/, (_req, res) => {
-    res.sendFile(path.join(distDir, 'index.html'));
+  // index:false — the document for "/" must go through the prerenderer below,
+  // not be served straight off disk by the static middleware.
+  app.use(express.static(distDir, { index: false }));
+
+  const template = fs.readFileSync(path.join(distDir, 'index.html'), 'utf8');
+
+  // SPA fallback for client-side routes (/guestbook, /book-call, /links …) —
+  // but never swallow /api/* requests. renderShell() injects static content for
+  // the pages a non-JS crawler has to be able to read (see prerender.js).
+  app.get(/^\/(?!api\/).*/, (req, res) => {
+    res.type('html').send(renderShell(template, req.path));
   });
   console.log('[server] serving built frontend from', distDir);
 }
