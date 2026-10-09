@@ -41,6 +41,12 @@ PROJECTS
   Iseo. The brief was quiet and editorial — let the yachts carry the page. Alberto
   handled design, art direction, and copy end-to-end. Stack: WordPress on Aruba
   hosting with Plesk. Live at baumarine.it.
+- Agriturismo Rosalber (personal, 2026): website for a farm stay in Castello
+  Cabiaglio (Varese) — wild game cooking, archery ranges, events by the pond, rooms
+  to stay over. Opens on drone footage and splits the place into four doors: table,
+  adventure, events, rooms. Design, copy and build by Alberto. Stack: Next.js +
+  React + TypeScript + Tailwind + Motion, hosted on Netlify. Live at
+  agriturismorosalber.com.
 
 SKILLS
 Languages: Python, JavaScript, TypeScript, C, C++, HTML, CSS, Bash.

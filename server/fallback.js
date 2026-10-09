@@ -8,11 +8,13 @@ const FACTS_EN = {
     "Alberto is a full-stack developer who builds with AI, based between Italy and Switzerland. He ships web apps end-to-end and runs short-form video for the same brands.",
   ],
   projects:
-    "Two featured projects on the site: Kcal Tracker — a PWA calorie tracker that reads a meal from a photo (FastAPI, PostgreSQL, React, TypeScript, Gemini); and Baumarine — a website for an Italian luxury yacht shipyard on Lake Iseo, where Alberto did design, art direction and copy (WordPress).",
+    "Three featured projects on the site: Kcal Tracker — a PWA calorie tracker that reads a meal from a photo (FastAPI, PostgreSQL, React, TypeScript, Gemini); and Baumarine — a website for an Italian luxury yacht shipyard on Lake Iseo, where Alberto did design, art direction and copy (WordPress); and Agriturismo Rosalber — a Next.js site for a farm stay in the woods near Varese, with wild game cooking, archery, events and rooms.",
   kcal:
     "Kcal Tracker is a calorie tracker that feels like a real phone app: snap a photo of a meal and AI reads the calories and macros, or scan a barcode to log in two taps. Weekly and monthly charts vs a daily target. Installs as a PWA and works offline. Stack: FastAPI + PostgreSQL + React + TypeScript + Gemini.",
   baumarine:
     "Baumarine is a site for a premium yacht builder on Lake Iseo. The brief was quiet and editorial. Alberto handled design, art direction and copy. Built on WordPress. Live at baumarine.it.",
+  rosalber:
+    "Agriturismo Rosalber is a personal project: the website for a farm stay in Castello Cabiaglio (Varese) — wild game cooking, archery ranges, events by the pond and rooms to stay over. It opens on drone footage and splits the place into four doors: table, adventure, events, rooms. Built with Next.js, React, TypeScript, Tailwind and Motion, hosted on Netlify. Live at agriturismorosalber.com.",
   skills:
     "Alberto works across Python, JavaScript, TypeScript, C/C++, HTML/CSS and Bash; React, Next.js, Node, Flask, FastAPI, Bootstrap, Tailwind, NumPy and pandas; MySQL, PostgreSQL, MongoDB, Redis; plus Docker, Git, Linux, VS Code, Cursor, Figma, Postman and Hugging Face.",
   process:
@@ -42,7 +44,7 @@ const FACTS_EN = {
   languages:
     "Alberto speaks Italian and English fluently and can work in both.",
   fallback:
-    "You can ask about Alberto's projects (Kcal Tracker, Baumarine), his skills and stack, how he works, or how to book a call. What would you like to know?",
+    "You can ask about Alberto's projects (Kcal Tracker, Baumarine, Agriturismo Rosalber), his skills and stack, how he works, or how to book a call. What would you like to know?",
 };
 
 const FACTS_IT = {
@@ -51,11 +53,13 @@ const FACTS_IT = {
     "Alberto è uno sviluppatore full-stack che costruisce con l'AI e vive tra Italia e Svizzera. Realizza web app end-to-end e cura anche i social delle stesse aziende.",
   ],
   projects:
-    "Due progetti in evidenza sul sito: Kcal Tracker — un contatore di calorie PWA che riconosce il pasto da una foto (FastAPI, PostgreSQL, React, TypeScript, Gemini); e Baumarine — sito per un cantiere di yacht di lusso sul Lago d'Iseo, dove Alberto ha fatto design, direzione artistica e copy (WordPress).",
+    "Tre progetti in evidenza sul sito: Kcal Tracker — un contatore di calorie PWA che riconosce il pasto da una foto (FastAPI, PostgreSQL, React, TypeScript, Gemini); e Baumarine — sito per un cantiere di yacht di lusso sul Lago d'Iseo, dove Alberto ha fatto design, direzione artistica e copy (WordPress); e Agriturismo Rosalber — sito Next.js per un agriturismo nei boschi sopra Varese, con cucina di selvaggina, tiro con l'arco, eventi e alloggi.",
   kcal:
     "Kcal Tracker è un contatore di calorie che sembra una vera app: scatti una foto al pasto e l'AI legge calorie e macro, oppure scansioni un codice a barre e registri in due tap. Grafici settimanali e mensili sul target giornaliero. Si installa come PWA e funziona offline. Stack: FastAPI + PostgreSQL + React + TypeScript + Gemini.",
   baumarine:
     "Baumarine è il sito di un costruttore di yacht di lusso sul Lago d'Iseo. Il brief era sobrio ed editoriale. Alberto ha curato design, direzione artistica e copy. Costruito su WordPress. Live su baumarine.it.",
+  rosalber:
+    "Agriturismo Rosalber è un progetto personale: il sito di un agriturismo a Castello Cabiaglio (Varese) — cucina di selvaggina, campi di tiro con l'arco, eventi in riva al laghetto e camere per dormire. Si apre con riprese col drone e divide il posto in quattro porte: tavola, avventura, eventi, alloggi. Fatto con Next.js, React, TypeScript, Tailwind e Motion, hostato su Netlify. Live su agriturismorosalber.com.",
   skills:
     "Alberto lavora con Python, JavaScript, TypeScript, C/C++, HTML/CSS e Bash; React, Next.js, Node, Flask, FastAPI, Bootstrap, Tailwind, NumPy e pandas; MySQL, PostgreSQL, MongoDB, Redis; oltre a Docker, Git, Linux, VS Code, Cursor, Figma, Postman e Hugging Face.",
   process:
@@ -85,7 +89,7 @@ const FACTS_IT = {
   languages:
     "Alberto parla italiano e inglese fluentemente e lavora in entrambe le lingue.",
   fallback:
-    "Puoi chiedermi dei progetti di Alberto (Kcal Tracker, Baumarine), delle sue skill e del suo stack, di come lavora, o di come prenotare una call. Cosa vuoi sapere?",
+    "Puoi chiedermi dei progetti di Alberto (Kcal Tracker, Baumarine, Agriturismo Rosalber), delle sue skill e del suo stack, di come lavora, o di come prenotare una call. Cosa vuoi sapere?",
 };
 
 // Keyword rules — evaluated in order, first match wins. Keys are matched
@@ -98,6 +102,7 @@ const RULES = [
   { keys: ['stack', 'framework', 'library', 'tecnolog', 'framework preferito', 'stack preferito'], k: 'stack' },
   { keys: ['kcal', 'calorie', 'calorie', 'food', 'meal', 'barcode', 'macro', 'pasto', 'cibo'], k: 'kcal' },
   { keys: ['baumarine', 'yacht', 'boat', 'client', 'wordpress', 'cliente', 'barca', 'iseo'], k: 'baumarine' },
+  { keys: ['rosalber', 'agriturismo', 'farm', 'archery', 'arco', 'selvaggina', 'varese', 'cabiaglio', 'next.js', 'nextjs'], k: 'rosalber' },
   { keys: ['project', 'projects', 'work', 'built', 'build', 'portfolio', 'progetti', 'lavori', 'lavoro'], k: 'projects' },
   { keys: ['skill', 'stack', 'tech', 'language', 'framework', 'tool', 'competen', 'linguaggi', 'linguaggio', 'tecnologi', 'strumenti', 'strumento'], k: 'skills' },
   { keys: ['process', 'how do you work', 'how does he work', 'approach', 'steps', 'processo', 'come lavor', 'come funziona', 'metodo'], k: 'process' },

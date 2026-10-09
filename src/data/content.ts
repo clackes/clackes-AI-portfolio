@@ -132,6 +132,24 @@ export const projects: Project[] = [
     link: { label: 'Visit website', href: 'https://baumarine.it' },
     images: ['/baumarine.webp'],
   },
+  {
+    slug: 'rosalber',
+    kind: 'build',
+    name: 'Agriturismo Rosalber',
+    tagline: 'A farm stay in the woods above Varese',
+    meta: 'Personal project · Website',
+    blurb:
+      'A site for a farm stay in the woods near Varese: wild game cooking, archery, events by the pond and rooms to stay over. Drone footage up front, one page for each side of the place.',
+    description:
+      'A website for Agriturismo Rosalber in Castello Cabiaglio (Varese): three hectares of woods with a restaurant, archery ranges, a pond for events and rooms to stay over. The page opens on drone footage and splits the place into four doors (table, adventure, events, rooms) so every visitor finds their way in. Design, copy and build are mine.',
+    tags: ['Next.js', 'React', 'TypeScript', 'Tailwind', 'Motion', 'Netlify'],
+    image: '/rosalber.webp',
+    domain: 'agriturismorosalber.com',
+    year: '2026',
+    client: 'Personal project',
+    link: { label: 'Visit website', href: 'https://agriturismorosalber.com/' },
+    images: ['/rosalber.webp'],
+  },
 ];
 
 // The working process — 4 steps.
