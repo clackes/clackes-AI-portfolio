@@ -127,10 +127,10 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                     src={project.image}
                     alt={`${project.name} — ${project.tagline}`}
                     loading="lazy"
-                    className="block h-[300px] w-full object-cover object-top"
+                    className="block aspect-[3/2] w-full object-cover object-top"
                   />
                 ) : (
-                  <div className="flex h-[300px] items-center justify-center font-mono text-[11px] uppercase tracking-widest text-muted">
+                  <div className="flex aspect-[3/2] items-center justify-center font-mono text-[11px] uppercase tracking-widest text-muted">
                     Image here
                   </div>
                 )}
