@@ -1,10 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { Reveal } from '@/components/Reveal';
 import Stack from '@/components/Stack';
 import { profile, principles } from '@/data/content';
 import { useT } from '@/i18n';
 import type { IconType } from 'react-icons';
+import { Bot, Flame, Layers } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import {
   SiReact, SiNextdotjs, SiTypescript, SiPython, SiFastapi,
   SiNodedotjs, SiTailwindcss, SiDocker, SiGooglegemini, SiPostgresql,
@@ -14,14 +16,11 @@ import luganoMap from '@/assets/lugano-map.webp';
 /* ────────────────────────────────────────────────────────────────────────
    About bento — 1:1 with the reference (pszostak.pl) grid & type scale.
 
-   Desktop grid  md:grid-rows-[9rem_auto_9rem]
-   row 1 (9rem):  [ Name ]      [ ===== Hover deck (span 2) ===== ]
+   Desktop grid  md:grid-rows-[minmax(9rem,auto)_auto_9rem]
+   row 1 (9rem+): [ Name ]      [ ===== Principles (span 2) ===== ]
    row 2 (auto):  [ Mindset ]   [ Portrait ]        [ Craft ]
    row 3 (9rem):  [ (Mindset) ] [ Location ]        [ (Craft) ]
    ──────────────────────────────────────────────────────────────────────── */
-
-const CARD_SHADOW = '0 -5px 30px rgba(0,0,0,0.3)';
-const ACCENT_SHADOW = '0 -5px 35px rgba(59,130,246,0.5)';
 
 // ── Name tile ──────────────────────────────────────────────────────────────
 function NameCard({ className = '' }: { className?: string }) {
@@ -60,138 +59,41 @@ function NameCard({ className = '' }: { className?: string }) {
   );
 }
 
-// ── Hover-to-read-more fanned deck ──────────────────────────────────────────
-function DeckCard({
-  pr,
-  variant,
-  hovered,
-  setHovered,
-  index,
-}: {
-  pr: { n: string; title: string; body: string };
-  variant: 'left' | 'mid' | 'right';
-  hovered: number | null;
-  setHovered: (v: number | null) => void;
-  index: number;
-}) {
-  const t = useT();
-  const title = t(`about.principles.${pr.n}.title`);
-  const body = t(`about.principles.${pr.n}.body`);
-  const isHov = hovered === index;
-  const mid = variant === 'mid';
-  const baseY = mid ? 82 : 94;
-  const y = isHov ? baseY - 20 : baseY;
-  const layout =
-    variant === 'left'
-      ? 'w-1/3 h-44 -mr-6 z-10 pr-6 text-left'
-      : variant === 'right'
-        ? 'w-1/3 h-44 -ml-6 z-10 pl-6 text-right'
-        : 'w-2/5 h-48 z-20 text-center';
-
-  return (
-    <div
-      onMouseEnter={() => setHovered(index)}
-      style={{
-        transform: `translateY(${y}px)`,
-        boxShadow: isHov ? ACCENT_SHADOW : CARD_SHADOW,
-        borderColor: isHov ? 'rgba(59,130,246,0.5)' : 'rgba(228,228,231,0.1)',
-        zIndex: isHov ? 30 : undefined,
-      }}
-      className={`group/card relative flex flex-col justify-start overflow-hidden rounded-t-xl border border-b-0 bg-card p-4 transition-[transform,box-shadow,border-color] duration-300 ${layout}`}
-    >
-      <div
-        className="absolute inset-x-1/4 top-0 h-px transition-opacity duration-300"
-        style={{
-          background: 'linear-gradient(to right, transparent, rgba(59,130,246,0.5), transparent)',
-          opacity: isHov ? 1 : 0,
-        }}
-      />
-      <div className="relative z-10">
-        <span
-          className={`block uppercase text-foreground ${
-            mid ? 'mb-1 text-[12px] font-black leading-none tracking-tight' : 'text-[10px] font-bold leading-tight opacity-90'
-          }`}
-        >
-          {title}
-        </span>
-        <span
-          className="mt-2 block text-[10px] leading-snug text-muted transition-all duration-300"
-          style={
-            isHov
-              ? { opacity: 1 }
-              : {
-                  opacity: 0.5,
-                  WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 15%, transparent 75%)',
-                  maskImage: 'linear-gradient(to bottom, black 0%, black 15%, transparent 75%)',
-                }
-          }
-        >
-          {body}
-        </span>
-      </div>
-    </div>
-  );
-}
+// ── Principles — three always-visible columns, same card language as the
+// rest of the bento (gradient card, accent rule, muted body copy).
+const principleIcons: Record<string, LucideIcon> = { '01': Flame, '02': Layers, '03': Bot };
 
 function PrinciplesCard({ className = '' }: { className?: string }) {
   const t = useT();
-  const [hovered, setHovered] = useState<number | null>(null);
-  const variants = ['left', 'mid', 'right'] as const;
   return (
     <div
-      className={`group relative hidden h-32 overflow-hidden rounded-2xl border border-card-border bg-gradient-to-br from-card to-card-border backdrop-blur-md transition-colors duration-300 hover:border-accent/60 md:block md:h-full ${className}`}
-      onMouseLeave={() => setHovered(null)}
+      className={`group relative overflow-hidden rounded-2xl border border-card-border bg-gradient-to-br from-card to-card-border backdrop-blur-md transition-colors duration-300 hover:border-accent/60 ${className}`}
     >
-      {/* hover hint */}
-      <div
-        className={`pointer-events-none absolute left-0 right-0 top-4 z-30 hidden justify-center transition-opacity delay-100 duration-300 md:flex ${
-          hovered !== null ? 'opacity-0' : 'opacity-100'
-        }`}
-      >
-        <span className="rounded-full border border-accent/10 bg-card/50 px-3 py-1 font-mono text-[8px] font-medium uppercase tracking-[0.2em] text-accent/60 backdrop-blur-sm">
-          {t('about.principles.hint')}
-        </span>
-      </div>
       {/* dotted texture */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-[0.03]"
         style={{ backgroundImage: 'radial-gradient(circle, var(--foreground) 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }}
       />
-      {/* desktop deck */}
-      <div className="relative z-10 hidden h-full w-full items-end justify-center overflow-hidden rounded-2xl px-2 md:flex">
-        {principles.map((pr, i) => (
-          <DeckCard key={pr.n} pr={pr} variant={variants[i] ?? 'mid'} hovered={hovered} setHovered={setHovered} index={i} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ── Mobile-only: each principle as its own small card, side by side ──────────
-// Same solid bg-card as the desktop deck's individual cards (the gradient
-// belongs to the outer deck container, not each card), same per-position text
-// alignment as the desktop DeckCard variants (left/centre/right), and the
-// middle one is taller — same "raised centre card" shape as the desktop fan.
-function PrincipleMiniCard({
-  pr,
-  raised = false,
-  align = 'left',
-  className = '',
-}: {
-  pr: (typeof principles)[number];
-  raised?: boolean;
-  align?: 'left' | 'center' | 'right';
-  className?: string;
-}) {
-  const t = useT();
-  const alignClass = align === 'center' ? 'text-center' : align === 'right' ? 'text-right' : 'text-left';
-  return (
-    <div
-      className={`rounded-xl border border-card-border bg-card p-3 backdrop-blur-md ${alignClass} ${raised ? 'min-h-[132px]' : 'min-h-[112px]'} ${className}`}
-    >
-      <h3 className="text-[10px] font-bold uppercase leading-tight text-foreground">{t(`about.principles.${pr.n}.title`)}</h3>
-      <p className="mt-1 text-[9px] leading-tight text-muted opacity-70">{t(`about.principles.${pr.n}.body`)}</p>
+      <ul className="relative z-10 grid h-full grid-cols-1 divide-y divide-card-border/60 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+        {principles.map((pr) => {
+          const Icon = principleIcons[pr.n] ?? Flame;
+          return (
+            <li key={pr.n} className="group/item flex flex-col gap-2 p-5">
+              <div className="flex items-center justify-between">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-accent/20 bg-accent/10 text-accent transition-colors duration-300 group-hover/item:border-accent/50">
+                  <Icon size={16} strokeWidth={2} />
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted opacity-60">{pr.n}</span>
+              </div>
+              <h3 className="text-base font-bold leading-tight tracking-tight text-foreground">
+                {t(`about.principles.${pr.n}.title`)}
+              </h3>
+              <p className="text-sm leading-snug text-muted">{t(`about.principles.${pr.n}.body`)}</p>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }
@@ -492,42 +394,19 @@ function Craft({ className = '' }: { className?: string }) {
 }
 
 export function About() {
-  const t = useT();
   return (
     <section id="about" className="mx-auto max-w-5xl px-4 pb-32 pt-0" style={{ scrollMarginTop: 120 }}>
       <Reveal>
         {/* Mobile uses a 6-col grid (halves = span-3, thirds = span-2) so the
-            bento reads: [Name|Portrait] / [3 principle cards] / [Craft|Location]
+            bento reads: [Name|Portrait] / [Principles] / [Craft|Location]
             / [Craft(cont.)|Mindset intro] / [Avatar|Mindset carousel] — a plain
             sparse auto-flow, just from DOM order + spans, no explicit
             positioning needed. Desktop keeps its original explicit 3-col grid. */}
-        <div className="grid grid-cols-6 gap-3 md:grid-cols-3 md:grid-rows-[9rem_auto_9rem]">
+        <div className="grid grid-cols-6 gap-3 md:grid-cols-3 md:grid-rows-[minmax(9rem,auto)_auto_9rem]">
           <NameCard className="col-span-3 md:col-span-1 md:row-span-1 md:col-start-1 md:row-start-1" />
           <Portrait className="aspect-square col-span-3 md:aspect-square md:col-span-1 md:h-full md:w-full md:col-start-2 md:row-start-2" />
 
-          <PrinciplesCard className="md:col-span-2 md:col-start-2 md:row-start-1" />
-          {/* Desktop wraps the hint pill + fan of cards in one outer box
-              (gradient bg, rounded-2xl, border) — the 3 cards sit inside it,
-              not floating loose on the page background. Rebuild that same
-              nesting here instead of the 3 cards alone. */}
-          <div className="relative overflow-hidden rounded-2xl border border-card-border bg-gradient-to-br from-card to-card-border p-3 pt-7 backdrop-blur-md md:hidden col-span-6">
-            <div className="pointer-events-none absolute inset-x-0 top-2.5 z-10 flex justify-center">
-              <span className="rounded-full border border-accent/10 bg-card/50 px-3 py-1 font-mono text-[8px] font-medium uppercase tracking-[0.2em] text-accent/60 backdrop-blur-sm">
-                {t('about.principles.hint')}
-              </span>
-            </div>
-            <div className="flex items-end gap-3">
-              {principles.map((pr, i) => (
-                <PrincipleMiniCard
-                  key={pr.n}
-                  pr={pr}
-                  raised={i === 1}
-                  align={i === 0 ? 'left' : i === 1 ? 'center' : 'right'}
-                  className="flex-1"
-                />
-              ))}
-            </div>
-          </div>
+          <PrinciplesCard className="col-span-6 md:col-span-2 md:col-start-2 md:row-start-1" />
 
           <Mindset className="hidden md:flex col-span-1 row-span-2 md:col-start-1 md:row-start-2" />
 

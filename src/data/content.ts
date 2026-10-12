@@ -50,23 +50,11 @@ export const skillGroups: { title: string; items: string[] }[] = [
 ];
 
 // Merged manifesto: what I stand for + what I build + how I build it.
-// Rendered as an editorial numbered list inside the About section.
+// Rendered as three columns in the About bento (copy lives in i18n).
 export const principles = [
-  {
-    n: '01',
-    title: 'I do it all myself',
-    body: 'From the first idea to the day it goes live, all in one pair of hands. Nothing gets lost along the way.',
-  },
-  {
-    n: '02',
-    title: 'I build things that work',
-    body: 'Not just pretty demos: things that really run, every day, for the people who use them.',
-  },
-  {
-    n: '03',
-    title: 'I steer the AI',
-    body: 'I know it inside out, not just by name. I make it work for you, without surprises.',
-  },
+  { n: '01', title: "I don't quit", body: "If I don't know it, I learn it. Curiosity and stubbornness are my method." },
+  { n: '02', title: 'I see the whole system', body: 'From OS to cloud, from backend to database: I know how the pieces fit together.' },
+  { n: '03', title: 'I put AI to work', body: 'Not a buzzword: agents that automate analysis and busywork, so time goes where it counts.' },
 ];
 
 // Projects — one list. Cards render by `kind`; clicking opens the detail view.

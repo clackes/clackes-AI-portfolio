@@ -31,13 +31,12 @@ const en: Dict = {
 
   'about.role': 'Developer · AI Builder · Social Media',
 
-  'about.principles.hint': 'Hover to read more',
-  'about.principles.01.title': "I don't give up",
-  'about.principles.01.body': "Curiosity and stubbornness got me here. When I don't know something, I learn it — and keep going.",
-  'about.principles.02.title': 'I cover the whole stack',
-  'about.principles.02.body': 'Windows, Linux, macOS, Docker on cloud VPS, Python, C++, JavaScript, SQL and NoSQL — I get how the whole system fits together, not just one piece.',
+  'about.principles.01.title': "I don't quit",
+  'about.principles.01.body': "If I don't know it, I learn it. Curiosity and stubbornness are my method.",
+  'about.principles.02.title': 'I see the whole system',
+  'about.principles.02.body': 'From OS to cloud, from backend to database: I know how the pieces fit together.',
   'about.principles.03.title': 'I put AI to work',
-  'about.principles.03.body': "Not a buzzword on a slide: AI agents that actually automate analysis and busywork, so my time goes where it matters.",
+  'about.principles.03.body': 'Not a buzzword: agents that automate analysis and busywork, so time goes where it counts.',
 
   'about.mindset.title': 'Mindset',
   'about.mindset.line1.strong': 'Building more than software.',
@@ -201,13 +200,12 @@ const it: Dict = {
 
   'about.role': 'Sviluppatore · AI Builder · Social Media',
 
-  'about.principles.hint': 'Passa il mouse per leggere',
   'about.principles.01.title': 'Non mollo mai',
-  'about.principles.01.body': 'Curiosità e testardaggine mi hanno portato fin qui. Se non so una cosa, la imparo — e vado avanti.',
-  'about.principles.02.title': 'Conosco tutto lo stack',
-  'about.principles.02.body': 'Windows, Linux, macOS, Docker su VPS in cloud, Python, C++, JavaScript, SQL e NoSQL — capisco come si incastra il sistema intero, non solo un pezzo.',
+  'about.principles.01.body': 'Se non so una cosa, la imparo. Curiosità e testardaggine sono il mio metodo.',
+  'about.principles.02.title': 'Vedo il sistema intero',
+  'about.principles.02.body': 'Dal sistema operativo al cloud, dal backend al database: so come si incastrano i pezzi.',
   'about.principles.03.title': "Metto l'AI al lavoro",
-  'about.principles.03.body': 'Non uno slogan da slide: agenti IA che automatizzano davvero analisi e lavoro ripetitivo, così il mio tempo va dove conta.',
+  'about.principles.03.body': 'Non uno slogan: agenti che automatizzano analisi e lavoro ripetitivo, così il tempo va dove conta.',
 
   'about.mindset.title': 'Mentalità',
   'about.mindset.line1.strong': 'Costruire più che software.',
