@@ -32,11 +32,14 @@ HOW HE WORKS (4 steps)
    rank content today: AI-produced video, thumbnails, iteration on what spreads.
 
 PROJECTS
-- Kcal Tracker (personal, 2026): a calorie tracker that feels like a real phone app.
-  Snap a photo of a meal and AI reads calories + macros; or scan a barcode and log
-  in two taps. Weekly / monthly charts vs a daily target. Installs as a PWA and
-  works offline. Stack: FastAPI + PostgreSQL backend, React + TypeScript frontend,
-  Gemini for the vision pipeline, PWA for on-device install.
+- Kcal Tracker (personal, 2026): a food app that tells you what to eat instead of
+  only asking what you ate, because almost nobody keeps logging meals. You list what's
+  in the fridge; "I'm hungry" suggests three meals for that time of day (meat first,
+  since it spoils fastest) and picking one logs it. In the evening it plans tomorrow's
+  packed lunch and snacks. Also photo + barcode logging, AI daily menus that adapt to
+  training before/after a meal, quests, and quiet hours for notifications. Installs
+  as a PWA and works offline. Stack: FastAPI + PostgreSQL backend, React + TypeScript
+  frontend, Gemini (with Claude as fallback) for the AI parts.
 - Baumarine (client, 2025): website for an Italian luxury yacht shipyard on Lake
   Iseo. The brief was quiet and editorial — let the yachts carry the page. Alberto
   handled design, art direction, and copy end-to-end. Stack: WordPress on Aruba

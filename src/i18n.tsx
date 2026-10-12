@@ -69,7 +69,7 @@ const en: Dict = {
   'work.category.client': 'Client Website',
   'work.category.build': 'Web / PWA App',
   'work.link.visit': 'Visit website',
-  'work.kcal-tracker.blurb': 'Scan a barcode, log a meal in two taps, watch how your week is going. Installs on your phone like any other app.',
+  'work.kcal-tracker.blurb': "Almost nobody keeps logging meals. So the app flips it: tell it what's in your fridge and it suggests three meals for right now. Picking one logs it. Installs on your phone like any other app.",
   'work.baumarine.blurb': 'A site for a premium yacht builder on Lake Iseo: quiet, editorial, and built to feel as considered as the yachts themselves. Design, art direction and copy are mine.',
   'work.rosalber.blurb': 'A site for a farm stay in the woods near Varese: wild game cooking, archery, events by the pond and rooms to stay over. Drone footage up front, one page for each side of the place.',
 
@@ -239,7 +239,7 @@ const it: Dict = {
   'work.category.client': 'Sito cliente',
   'work.category.build': 'App Web / PWA',
   'work.link.visit': 'Visita il sito',
-  'work.kcal-tracker.blurb': "Scansiona un codice a barre, registra un pasto in due tap, guarda com'è andata la settimana. Si installa sul telefono come una qualsiasi app.",
+  'work.kcal-tracker.blurb': "Quasi nessuno ha voglia di registrare i pasti. Così l'app ribalta la cosa: le dici cosa hai in casa e ti propone tre pasti per adesso. Sceglierne uno vale come registrarlo. Si installa sul telefono come una qualsiasi app.",
   'work.baumarine.blurb': "Un sito per un costruttore di yacht di lusso sul Lago d'Iseo: sobrio, editoriale, pensato per trasmettere la stessa cura dei suoi yacht. Design, art direction e copy sono miei.",
   'work.rosalber.blurb': "Il sito di un agriturismo nei boschi sopra Varese: cucina di selvaggina, tiro con l'arco, feste in riva al laghetto e camere per fermarsi a dormire. Riprese col drone in apertura, una pagina per ogni anima del posto.",
 

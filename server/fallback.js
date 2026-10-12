@@ -8,9 +8,9 @@ const FACTS_EN = {
     "Alberto is a full-stack developer who builds with AI, based between Italy and Switzerland. He ships web apps end-to-end and runs short-form video for the same brands.",
   ],
   projects:
-    "Three featured projects on the site: Kcal Tracker — a PWA calorie tracker that reads a meal from a photo (FastAPI, PostgreSQL, React, TypeScript, Gemini); and Baumarine — a website for an Italian luxury yacht shipyard on Lake Iseo, where Alberto did design, art direction and copy (WordPress); and Agriturismo Rosalber — a Next.js site for a farm stay in the woods near Varese, with wild game cooking, archery, events and rooms.",
+    "Three featured projects on the site: Kcal Tracker — a PWA food app that suggests what to eat from what's in your fridge (FastAPI, PostgreSQL, React, TypeScript, Gemini); and Baumarine — a website for an Italian luxury yacht shipyard on Lake Iseo, where Alberto did design, art direction and copy (WordPress); and Agriturismo Rosalber — a Next.js site for a farm stay in the woods near Varese, with wild game cooking, archery, events and rooms.",
   kcal:
-    "Kcal Tracker is a calorie tracker that feels like a real phone app: snap a photo of a meal and AI reads the calories and macros, or scan a barcode to log in two taps. Weekly and monthly charts vs a daily target. Installs as a PWA and works offline. Stack: FastAPI + PostgreSQL + React + TypeScript + Gemini.",
+    "Kcal Tracker flips calorie tracking around: instead of asking what you ate, it tells you what to eat. You list what's in the fridge, tap \"I'm hungry\" and get three meals for that time of day (meat first, since it spoils fastest); picking one logs it. In the evening it plans tomorrow's packed lunch and snacks. Photo and barcode logging, quests and quiet hours for notifications. Installs as a PWA and works offline. Stack: FastAPI + PostgreSQL + React + TypeScript + Gemini.",
   baumarine:
     "Baumarine is a site for a premium yacht builder on Lake Iseo. The brief was quiet and editorial. Alberto handled design, art direction and copy. Built on WordPress. Live at baumarine.it.",
   rosalber:
@@ -53,9 +53,9 @@ const FACTS_IT = {
     "Alberto è uno sviluppatore full-stack che costruisce con l'AI e vive tra Italia e Svizzera. Realizza web app end-to-end e cura anche i social delle stesse aziende.",
   ],
   projects:
-    "Tre progetti in evidenza sul sito: Kcal Tracker — un contatore di calorie PWA che riconosce il pasto da una foto (FastAPI, PostgreSQL, React, TypeScript, Gemini); e Baumarine — sito per un cantiere di yacht di lusso sul Lago d'Iseo, dove Alberto ha fatto design, direzione artistica e copy (WordPress); e Agriturismo Rosalber — sito Next.js per un agriturismo nei boschi sopra Varese, con cucina di selvaggina, tiro con l'arco, eventi e alloggi.",
+    "Tre progetti in evidenza sul sito: Kcal Tracker — una PWA che ti propone cosa mangiare con quello che hai in casa (FastAPI, PostgreSQL, React, TypeScript, Gemini); e Baumarine — sito per un cantiere di yacht di lusso sul Lago d'Iseo, dove Alberto ha fatto design, direzione artistica e copy (WordPress); e Agriturismo Rosalber — sito Next.js per un agriturismo nei boschi sopra Varese, con cucina di selvaggina, tiro con l'arco, eventi e alloggi.",
   kcal:
-    "Kcal Tracker è un contatore di calorie che sembra una vera app: scatti una foto al pasto e l'AI legge calorie e macro, oppure scansioni un codice a barre e registri in due tap. Grafici settimanali e mensili sul target giornaliero. Si installa come PWA e funziona offline. Stack: FastAPI + PostgreSQL + React + TypeScript + Gemini.",
+    "Kcal Tracker ribalta il conteggio delle calorie: invece di chiederti cosa hai mangiato, ti dice cosa mangiare. Scrivi cosa hai in casa, tocchi \"Ho fame\" e ricevi tre pasti per quell'ora (prima la carne, che scade prima); sceglierne uno lo registra. La sera prepara pranzo e merende del giorno dopo. Registrazione da foto e codice a barre, quest e fasce di silenzio per le notifiche. Si installa come PWA e funziona offline. Stack: FastAPI + PostgreSQL + React + TypeScript + Gemini.",
   baumarine:
     "Baumarine è il sito di un costruttore di yacht di lusso sul Lago d'Iseo. Il brief era sobrio ed editoriale. Alberto ha curato design, direzione artistica e copy. Costruito su WordPress. Live su baumarine.it.",
   rosalber:
