@@ -1,3 +1,5 @@
+import { siteData, type SiteProject } from './site';
+
 export const profile = {
   name: 'Alberto Vergani',
   brand: 'Alberto Vergani',
@@ -175,3 +177,14 @@ export const experience = [
     chips: ['Strategy', 'IG / TikTok', 'AI video'],
   },
 ];
+
+// ── Managed from Nexus ───────────────────────────────────────────────────────
+// Email, socials and the project list come from the published site content;
+// the literals above stay as the reference copy used to seed it.
+const site = siteData();
+if (site.profile?.email) {
+  profile.email = site.profile.email;
+  profile.socials = site.profile.socials?.length ? site.profile.socials : profile.socials;
+}
+export const siteProjects: SiteProject[] = site.projects.filter((p) => !p.hidden);
+export const siteSkills = site.skills.filter((s) => !s.hidden);

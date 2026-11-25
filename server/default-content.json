@@ -1,0 +1,231 @@
+{
+ "v": 1,
+ "profile": {
+  "email": "albertovergani267@gmail.com",
+  "socials": [
+   {
+    "label": "Email",
+    "href": "mailto:albertovergani267@gmail.com",
+    "handle": "alberto.vergani"
+   },
+   {
+    "label": "GitHub",
+    "href": "https://github.com/clackes",
+    "handle": "@clackes"
+   },
+   {
+    "label": "LinkedIn",
+    "href": "https://www.linkedin.com/in/alberto-vergani",
+    "handle": "in/alberto-vergani"
+   }
+  ]
+ },
+ "projects": [
+  {
+   "slug": "kcal-tracker",
+   "kind": "build",
+   "hidden": false,
+   "name": "Kcal Tracker",
+   "tagline": {
+    "en": "A food app that tells you what to eat, not just what you ate",
+    "it": ""
+   },
+   "blurb": {
+    "en": "Almost nobody keeps logging meals. So the app flips it: tell it what's in your fridge and it suggests three meals for right now. Picking one logs it. Installs on your phone like any other app.",
+    "it": "Quasi nessuno ha voglia di registrare i pasti. Così l'app ribalta la cosa: le dici cosa hai in casa e ti propone tre pasti per adesso. Sceglierne uno vale come registrarlo. Si installa sul telefono come una qualsiasi app."
+   },
+   "description": {
+    "en": "Calorie trackers fail because logging is a chore that pays off weeks later, if ever. Kcal Tracker turns the question around: instead of \"what did you eat?\" it answers \"what should I eat now?\". You keep a list of what's at home; at any hour, \"I'm hungry\" gives three options for that meal built from it (meat first, since it spoils fastest), and choosing one logs it. In the evening it plans tomorrow's packed lunch and snacks. Photo, barcode and quick lists cover everything else, with quests, streaks and quiet hours for notifications. Installs on the phone and works offline.",
+    "it": ""
+   },
+   "tags": [
+    "FastAPI",
+    "PostgreSQL",
+    "React",
+    "TypeScript",
+    "Gemini",
+    "PWA"
+   ],
+   "image": "/kcal-cover.webp",
+   "phones": [
+    "/kcal-2.webp",
+    "/kcal-1.webp",
+    "/kcal-4.webp"
+   ],
+   "domain": "",
+   "year": "2026",
+   "client": "Personal project",
+   "link": "",
+   "gradient": 0
+  },
+  {
+   "slug": "baumarine",
+   "kind": "client",
+   "hidden": false,
+   "name": "Baumarine",
+   "tagline": {
+    "en": "Italian luxury yacht shipyard",
+    "it": ""
+   },
+   "blurb": {
+    "en": "A site for a premium yacht builder on Lake Iseo: quiet, editorial, and built to feel as considered as the yachts themselves. Design, art direction and copy are mine.",
+    "it": "Un sito per un costruttore di yacht di lusso sul Lago d'Iseo: sobrio, editoriale, pensato per trasmettere la stessa cura dei suoi yacht. Design, art direction e copy sono miei."
+   },
+   "description": {
+    "en": "A site for a premium yacht builder on Lake Iseo. The brief was quiet and editorial: let the boats carry the page. I handled the design, art direction and copy, with a build and hosting setup tuned for a small luxury brand.",
+    "it": ""
+   },
+   "tags": [
+    "WordPress",
+    "Aruba",
+    "Plesk",
+    "Art direction"
+   ],
+   "image": "/baumarine.webp",
+   "phones": [],
+   "domain": "baumarine.it",
+   "year": "2025",
+   "client": "Baumarine",
+   "link": "https://baumarine.it",
+   "gradient": 1
+  },
+  {
+   "slug": "rosalber",
+   "kind": "build",
+   "hidden": false,
+   "name": "Agriturismo Rosalber",
+   "tagline": {
+    "en": "A farm stay in the woods above Varese",
+    "it": ""
+   },
+   "blurb": {
+    "en": "A site for a farm stay in the woods near Varese: wild game cooking, archery, events by the pond and rooms to stay over. Drone footage up front, one page for each side of the place.",
+    "it": "Il sito di un agriturismo nei boschi sopra Varese: cucina di selvaggina, tiro con l'arco, feste in riva al laghetto e camere per fermarsi a dormire. Riprese col drone in apertura, una pagina per ogni anima del posto."
+   },
+   "description": {
+    "en": "A website for Agriturismo Rosalber in Castello Cabiaglio (Varese): three hectares of woods with a restaurant, archery ranges, a pond for events and rooms to stay over. The page opens on drone footage and splits the place into four doors (table, adventure, events, rooms) so every visitor finds their way in. Design, copy and build are mine.",
+    "it": ""
+   },
+   "tags": [
+    "Next.js",
+    "React",
+    "TypeScript",
+    "Tailwind",
+    "Motion",
+    "Netlify"
+   ],
+   "image": "/rosalber.webp",
+   "phones": [],
+   "domain": "agriturismorosalber.com",
+   "year": "2026",
+   "client": "Personal project",
+   "link": "https://agriturismorosalber.com/",
+   "gradient": 2
+  }
+ ],
+ "skills": [
+  {
+   "name": "Python"
+  },
+  {
+   "name": "JavaScript"
+  },
+  {
+   "name": "TypeScript"
+  },
+  {
+   "name": "C"
+  },
+  {
+   "name": "C++"
+  },
+  {
+   "name": "HTML"
+  },
+  {
+   "name": "CSS"
+  },
+  {
+   "name": "Bash"
+  },
+  {
+   "name": "React"
+  },
+  {
+   "name": "Next.js"
+  },
+  {
+   "name": "Node.js"
+  },
+  {
+   "name": "Flask"
+  },
+  {
+   "name": "FastAPI"
+  },
+  {
+   "name": "Bootstrap"
+  },
+  {
+   "name": "Tailwind"
+  },
+  {
+   "name": "NumPy"
+  },
+  {
+   "name": "pandas"
+  },
+  {
+   "name": "MySQL"
+  },
+  {
+   "name": "PostgreSQL"
+  },
+  {
+   "name": "MongoDB"
+  },
+  {
+   "name": "Redis"
+  },
+  {
+   "name": "Docker"
+  },
+  {
+   "name": "Git"
+  },
+  {
+   "name": "GitHub"
+  },
+  {
+   "name": "Linux"
+  },
+  {
+   "name": "VS Code"
+  },
+  {
+   "name": "Cursor"
+  },
+  {
+   "name": "IntelliJ IDEA"
+  },
+  {
+   "name": "Figma"
+  },
+  {
+   "name": "Postman"
+  },
+  {
+   "name": "Linear"
+  },
+  {
+   "name": "Hugging Face"
+  }
+ ],
+ "texts": {
+  "en": {},
+  "it": {}
+ },
+ "assistant": {
+  "extra": ""
+ }
+}

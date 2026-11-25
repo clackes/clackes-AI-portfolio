@@ -73,7 +73,7 @@ export const guestbook = express.Router();
 
 // list messages
 guestbook.get('/guestbook', (_req, res) => {
-  res.json({ messages: load() });
+  res.json({ messages: load().filter((m) => !m.hidden) });
 });
 
 // which sign-in methods are available
@@ -190,3 +190,30 @@ guestbook.get('/auth/google/callback', async (req, res) => {
     res.redirect(`${WEB_BASE}/guestbook?error=google`);
   }
 });
+
+// ── moderation (used by the admin API for Nexus) ─────────────────────────────
+export const guestbookAll = () => load();
+export function guestbookSet(id, patch) {
+  const list = load();
+  const m = list.find((x) => x.id === id);
+  if (!m) throw new Error('Messaggio non trovato');
+  if ('hidden' in patch) m.hidden = Boolean(patch.hidden);
+  save(list);
+  return m;
+}
+export function guestbookDelete(id) {
+  const list = load();
+  const next = list.filter((x) => x.id !== id);
+  if (next.length === list.length) throw new Error('Messaggio non trovato');
+  save(next);
+}
+/** A message signed as the owner, straight from Nexus. */
+export function guestbookOwnerPost(text) {
+  const clean = String(text ?? '').trim().slice(0, 280);
+  if (!clean) throw new Error('Il messaggio è vuoto');
+  const list = load();
+  const message = { id: crypto.randomUUID(), name: 'Alberto Vergani', avatar: '', text: clean, provider: 'owner', createdAt: new Date().toISOString() };
+  list.push(message);
+  save(list);
+  return message;
+}

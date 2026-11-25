@@ -2,6 +2,7 @@ import type { IconType } from 'react-icons';
 import { Reveal } from '@/components/Reveal';
 import { SkillSphere, type Skill } from '@/components/SkillSphere';
 import { useT } from '@/i18n';
+import { siteSkills } from '@/data/content';
 import {
   SiPython, SiJavascript, SiTypescript, SiC, SiCplusplus, SiHtml5, SiCss, SiGnubash,
   SiReact, SiNextdotjs, SiNodedotjs, SiBootstrap,
@@ -56,6 +57,29 @@ const SKILLS: Skill[] = [
   { name: 'Hugging Face', Icon: imgIcon('/skill-logos/huggingface.webp'), color: '#FFD21E' },
 ];
 
+// A skill added from Nexus without a known logo: its initials in a soft disc.
+function letterIcon(name: string): IconType {
+  const LetterIcon: IconType = ({ size, color }) => (
+    <span
+      style={{ width: size, height: size, color, fontSize: Number(size) * 0.42 }}
+      className="flex items-center justify-center rounded-full border border-white/20 bg-white/5 font-bold"
+    >
+      {name.replace(/[^A-Za-z0-9+#]/g, '').slice(0, 2)}
+    </span>
+  );
+  return LetterIcon;
+}
+
+const KNOWN = new Map(SKILLS.map((s) => [s.name.toLowerCase(), s]));
+
+// The list (and its order) comes from the site content; known names keep their brand logo.
+const SHOWN: Skill[] = siteSkills.map((s) => {
+  const known = KNOWN.get(s.name.toLowerCase());
+  if (s.logo) return { name: s.name, Icon: imgIcon(s.logo), color: s.color || known?.color || '#ffffff' };
+  if (known) return { ...known, color: s.color || known.color };
+  return { name: s.name, Icon: letterIcon(s.name), color: s.color || '#ffffff' };
+});
+
 export function Skills() {
   const t = useT();
   return (
@@ -68,7 +92,7 @@ export function Skills() {
           </h2>
         </Reveal>
 
-        <SkillSphere skills={SKILLS} className="mt-2 h-[440px] w-full sm:h-[560px] md:h-[640px]" />
+        <SkillSphere skills={SHOWN.length ? SHOWN : SKILLS} className="mt-2 h-[440px] w-full sm:h-[560px] md:h-[640px]" />
       </div>
     </section>
   );

@@ -3,6 +3,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        GIT_COMMIT: ${GIT_COMMIT:-}
+        BUILT_AT: ${BUILT_AT:-}
     image: clackes-ai-portfolio:latest
     container_name: ai-portfolio
     restart: unless-stopped
@@ -20,6 +23,9 @@ services:
     # Persist the guestbook messages across rebuilds.
     volumes:
       - ./server/guestbook.json:/app/server/guestbook.json
+      # Site content managed from Nexus (published, draft, history, uploads,
+      # bookings, visit totals).
+      - ./server/data:/app/server/data
     networks:
       - cloudflare-web
     healthcheck:

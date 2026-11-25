@@ -13,3 +13,4 @@ dist
 .agents
 .impeccable
 .vite
+server/data

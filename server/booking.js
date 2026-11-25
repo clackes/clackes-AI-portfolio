@@ -9,7 +9,30 @@
 //
 // Without those it runs in "stub" mode: it validates + logs the booking and
 // returns ok, so the frontend flow works end-to-end during local development.
+import path from 'node:path';
+import crypto from 'node:crypto';
 import { Router } from 'express';
+import { DATA, readJson, writeJson } from './store.js';
+
+// Every booking is also kept in data/bookings.json so Nexus can list them.
+const BOOKINGS = path.join(DATA, 'bookings.json');
+export const bookingsAll = () => readJson(BOOKINGS, []);
+function remember(rec) {
+  const list = bookingsAll();
+  list.push({ id: crypto.randomUUID(), createdAt: new Date().toISOString(), done: false, ...rec });
+  writeJson(BOOKINGS, list.slice(-500));
+}
+export function bookingSet(id, patch) {
+  const list = bookingsAll();
+  const b = list.find((x) => x.id === id);
+  if (!b) throw new Error('Prenotazione non trovata');
+  if ('done' in patch) b.done = Boolean(patch.done);
+  writeJson(BOOKINGS, list);
+  return b;
+}
+export function bookingDelete(id) {
+  writeJson(BOOKINGS, bookingsAll().filter((x) => x.id !== id));
+}
 
 export const booking = Router();
 
@@ -72,6 +95,7 @@ booking.post('/book', async (req, res) => {
   // No credentials yet → stub so the UI flow works locally.
   if (!configured) {
     console.log('[booking] (stub) new request:', { name: cleanName, email, date, time, tz, topic: cleanTopic });
+    remember({ name: cleanName, email: String(email).trim(), topic: cleanTopic, date, time, tz, durationMin: Number(durationMin) || 30, mode: 'stub' });
     return res.json({ ok: true, mode: 'stub' });
   }
 
@@ -124,6 +148,7 @@ booking.post('/book', async (req, res) => {
       null;
 
     console.log('[booking] event created:', event.id, meetLink);
+    remember({ name: cleanName, email: String(email).trim(), topic: cleanTopic, date, time, tz, durationMin: Number(durationMin) || 30, mode: 'calendar', meetLink, htmlLink: event.htmlLink || null });
     res.json({ ok: true, mode: 'calendar', meetLink, htmlLink: event.htmlLink });
   } catch (err) {
     console.error('[booking] error:', err?.message || err);

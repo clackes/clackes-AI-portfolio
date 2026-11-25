@@ -8,7 +8,10 @@ import express from 'express';
 import cors from 'cors';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { renderShell } from './prerender.js';
-import { PERSONA } from './persona.js';
+import { buildPersona } from './persona.js';
+import { published, draft, UPLOADS } from './store.js';
+import { admin, previewValid } from './admin.js';
+import { visits } from './visits.js';
 import { localAnswer } from './fallback.js';
 import { guestbook } from './guestbook.js';
 import { booking } from './booking.js';
@@ -17,7 +20,15 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 app.use(cors());
+// Admin API for Nexus first: it needs a bigger body limit (image uploads).
+app.use('/api/admin', express.json({ limit: '12mb' }), admin);
 app.use(express.json({ limit: '256kb' }));
+
+// Cookieless visit counter.
+app.use('/api', visits);
+
+// Images uploaded from Nexus (content-addressed names, so cache them hard).
+app.use('/uploads', express.static(UPLOADS, { maxAge: '365d', immutable: true, index: false }));
 
 // Guestbook + auth routes (message board with GitHub/Google sign-in).
 app.use('/api', guestbook);
@@ -60,7 +71,7 @@ app.post('/api/chat', async (req, res) => {
         : '';
     const model = genAI.getGenerativeModel({
       model: MODEL,
-      systemInstruction: PERSONA + languageDirective,
+      systemInstruction: buildPersona(published()) + languageDirective,
     });
 
     // Map the chat transcript to Gemini's history format. Gemini requires the
@@ -102,8 +113,17 @@ if (fs.existsSync(distDir)) {
   // SPA fallback for client-side routes (/guestbook, /book-call, /links …) —
   // but never swallow /api/* requests. renderShell() injects static content for
   // the pages a non-JS crawler has to be able to read (see prerender.js).
-  app.get(/^\/(?!api\/).*/, (req, res) => {
-    res.type('html').send(renderShell(template, req.path));
+  // The site content is injected before the bundle so the first paint already
+  // shows it. `?anteprima=<token>` (signed, from Nexus) shows the draft instead.
+  const safeJson = (v) => JSON.stringify(v).replace(/</g, '\\u003c').replace(/\u2028|\u2029/g, '');
+  app.get(/^\/(?!api\/|uploads\/).*/, (req, res) => {
+    const preview = previewValid(req.query.anteprima);
+    const data = preview ? draft() : published();
+    const inject = `<script>window.__PORTFOLIO__=${safeJson(data)};${preview ? 'window.__PORTFOLIO_PREVIEW__=true;' : ''}</script>`;
+    let html = renderShell(template, req.path).replace('</head>', `${inject}</head>`);
+    if (preview) html = html.replace('<head>', '<head><meta name="robots" content="noindex">');
+    res.set('Cache-Control', 'no-cache');
+    res.type('html').send(html);
   });
   console.log('[server] serving built frontend from', distDir);
 }

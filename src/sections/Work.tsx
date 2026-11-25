@@ -1,8 +1,10 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { Reveal } from '@/components/Reveal';
-import { projects, type Project } from '@/data/content';
+import { siteProjects } from '@/data/content';
+import { loc, type SiteProject } from '@/data/site';
 import { ArrowUpRight } from 'lucide-react';
-import { useT } from '@/i18n';
+import { track } from '@/lib/track';
+import { useLang, useT } from '@/i18n';
 
 // Per-project gradient for the panel (matches the reference's coloured cards).
 const GRADIENTS = [
@@ -64,19 +66,19 @@ function PhoneShowcase({
   );
 }
 
-// Ordered screens per project — [left-back, centre-front, right-back].
-const PHONE_SHOWCASES: Record<string, [string, string, string]> = {
-  'kcal-tracker': ['/kcal-2.webp', '/kcal-1.webp', '/kcal-4.webp'],
-};
+// Three screens ([left-back, centre-front, right-back]) → phone mockup.
+const phonesOf = (p: SiteProject) => (p.phones && p.phones.length >= 3 ? (p.phones.slice(0, 3) as [string, string, string]) : null);
 
-function ProjectCard({ project, index }: { project: Project; index: number }) {
+function ProjectCard({ project, index }: { project: SiteProject; index: number }) {
   const t = useT();
+  const { lang } = useLang();
+  const phones = phonesOf(project);
+  const tagline = loc(project.tagline, lang);
   const reduced = useReducedMotion();
   const num = String(index + 1).padStart(2, '0');
-  const gradient = GRADIENTS[index % GRADIENTS.length];
+  const gradient = GRADIENTS[(project.gradient ?? index) % GRADIENTS.length];
   const category = project.kind === 'client' ? t('work.category.client') : t('work.category.build');
-  const blurbKey = `work.${project.slug}.blurb`;
-  const blurb = t(blurbKey);
+  const blurb = loc(project.blurb, lang);
 
   return (
     <Reveal delay={index * 0.06} className="h-full">
@@ -103,16 +105,16 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           style={{ background: gradient }}
         >
           <p className="max-w-2xl text-base font-medium leading-snug text-white sm:text-lg">
-            {blurb === blurbKey ? project.blurb : blurb}
+            {blurb}
           </p>
 
           {/* Mockup: PWA/mobile projects get a three-phone showcase, everything
               else gets the macOS-style window (client sites, dashboards, etc).
               Pinned to the bottom so both cards' mockups align regardless of
               blurb length. */}
-          {PHONE_SHOWCASES[project.slug] ? (
+          {phones ? (
             <div className="mt-auto pt-4 sm:pt-5">
-              <PhoneShowcase images={PHONE_SHOWCASES[project.slug]} alt={project.name} />
+              <PhoneShowcase images={phones} alt={project.name} />
             </div>
           ) : (
             <div className="mt-auto pt-4 sm:pt-5">
@@ -125,7 +127,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                 {project.image ? (
                   <img
                     src={project.image}
-                    alt={`${project.name} — ${project.tagline}`}
+                    alt={tagline ? `${project.name} — ${tagline}` : project.name}
                     loading="lazy"
                     className="block aspect-[3/2] w-full object-cover object-top"
                   />
@@ -152,7 +154,8 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           {project.link && (
             <li>
               <a
-                href={project.link.href}
+                href={project.link}
+                onClick={() => track('click', project.link)}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-1.5 rounded-lg border border-card-border bg-card px-3 py-1.5 font-mono text-xs uppercase tracking-wide text-foreground transition-colors hover:border-accent/60"
@@ -184,7 +187,7 @@ export function Work() {
         </Reveal>
 
         <div className="mt-14 grid grid-cols-1 gap-x-8 gap-y-16 md:grid-cols-2">
-          {projects.map((p, i) => (
+          {siteProjects.map((p, i) => (
             <ProjectCard key={p.slug} project={p} index={i} />
           ))}
         </div>

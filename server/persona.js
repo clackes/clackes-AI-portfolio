@@ -31,35 +31,9 @@ HOW HE WORKS (4 steps)
 4. Grow — short-form content strategy tailored to how Instagram and TikTok actually
    rank content today: AI-produced video, thumbnails, iteration on what spreads.
 
-PROJECTS
-- Kcal Tracker (personal, 2026): a food app that tells you what to eat instead of
-  only asking what you ate, because almost nobody keeps logging meals. You list what's
-  in the fridge; "I'm hungry" suggests three meals for that time of day (meat first,
-  since it spoils fastest) and picking one logs it. In the evening it plans tomorrow's
-  packed lunch and snacks. Also photo + barcode logging, AI daily menus that adapt to
-  training before/after a meal, quests, and quiet hours for notifications. Installs
-  as a PWA and works offline. Stack: FastAPI + PostgreSQL backend, React + TypeScript
-  frontend, Gemini (with Claude as fallback) for the AI parts.
-- Baumarine (client, 2025): website for an Italian luxury yacht shipyard on Lake
-  Iseo. The brief was quiet and editorial — let the yachts carry the page. Alberto
-  handled design, art direction, and copy end-to-end. Stack: WordPress on Aruba
-  hosting with Plesk. Live at baumarine.it.
-- Agriturismo Rosalber (personal, 2026): website for a farm stay in Castello
-  Cabiaglio (Varese) — wild game cooking, archery ranges, events by the pond, rooms
-  to stay over. Opens on drone footage and splits the place into four doors: table,
-  adventure, events, rooms. Design, copy and build by Alberto. Stack: Next.js +
-  React + TypeScript + Tailwind + Motion, hosted on Netlify. Live at
-  agriturismorosalber.com.
+{{PROJECTS}}
 
-SKILLS
-Languages: Python, JavaScript, TypeScript, C, C++, HTML, CSS, Bash.
-Frameworks & libraries: React, Next.js, Node.js, Flask, FastAPI, Bootstrap, Tailwind,
-  NumPy, pandas.
-Databases: MySQL, PostgreSQL, MongoDB, Redis.
-Tools & platforms: Docker, Git, GitHub, Linux, VS Code, Cursor, IntelliJ IDEA,
-  Figma, Postman, Hugging Face.
-Capabilities: websites, apps, automations, social media strategy, short-form video,
-  design, content, AI product integration (Gemini and others), PWA delivery.
+{{SKILLS}}
 
 BOOK A CALL / CONTACT
 - IMPORTANT: Whenever a visitor asks how to contact, reach, get in touch with,
@@ -82,4 +56,33 @@ STYLE
 - If a question is off-topic (weather, personal, unrelated tech), gently redirect
   to what you can help with — Alberto, his work, and how to work with him.`;
 
-export const PERSONA = CORE;
+// Projects and skills come from the published site content, so the assistant
+// always describes what the site actually shows. Extra instructions written
+// in Nexus are appended at the end.
+function projectsBlock(content) {
+  const list = (content.projects || []).filter((p) => !p.hidden);
+  if (!list.length) return 'PROJECTS\n(none listed right now)';
+  const lines = list.map((p) => {
+    const kind = p.kind === 'client' ? `client work for ${p.client || p.name}` : (p.client || 'personal project').toLowerCase();
+    const head = `- ${p.name} (${[kind, p.year].filter(Boolean).join(', ')})`;
+    const text = (p.description?.en || p.blurb?.en || '').trim();
+    const stack = p.tags?.length ? ` Stack: ${p.tags.join(', ')}.` : '';
+    const live = p.domain ? ` Live at ${p.domain}.` : p.link ? ` Link: ${p.link}.` : '';
+    return `${head}: ${text}${stack}${live}`;
+  });
+  return `PROJECTS\n${lines.join('\n')}`;
+}
+
+function skillsBlock(content) {
+  const names = (content.skills || []).filter((s) => !s.hidden).map((s) => s.name);
+  return `SKILLS\n${names.join(', ')}.\nCapabilities: websites, apps, automations, social media strategy, short-form video,\n  design, content, AI product integration (Gemini and others), PWA delivery.`;
+}
+
+export function buildPersona(content) {
+  let out = CORE.replace('{{PROJECTS}}', projectsBlock(content)).replace('{{SKILLS}}', skillsBlock(content));
+  const email = content.profile?.email;
+  if (email) out = out.replaceAll('albertovergani267@gmail.com', email);
+  const extra = String(content.assistant?.extra || '').trim();
+  if (extra) out += `\n\nEXTRA INSTRUCTIONS FROM ALBERTO\n${extra}`;
+  return out;
+}

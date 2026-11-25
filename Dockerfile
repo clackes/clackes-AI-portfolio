@@ -20,8 +20,13 @@ ENV PORT=8787
 COPY package.json package-lock.json* ./
 RUN npm ci --omit=dev --no-audit --no-fund
 
-# backend code + the assets built in stage 1
+# backend code + the assets built in stage 1 (strings.json: the site's default
+# texts, read by the admin API; server/data is a volume, never baked in)
 COPY server ./server
+COPY src/strings.json ./src/strings.json
+ARG GIT_COMMIT=""
+ARG BUILT_AT=""
+ENV GIT_COMMIT=$GIT_COMMIT BUILT_AT=$BUILT_AT
 COPY --from=build /app/dist ./dist
 
 EXPOSE 8787

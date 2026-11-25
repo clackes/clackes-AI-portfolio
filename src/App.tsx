@@ -14,6 +14,7 @@ import { Sponsor } from '@/sections/Sponsor';
 import { Legal } from '@/sections/Legal';
 import { GetInTouch } from '@/components/GetInTouch';
 import { useT } from '@/i18n';
+import { track } from '@/lib/track';
 
 export default function App() {
   useSmoothScroll();
@@ -25,6 +26,10 @@ export default function App() {
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
   }, []);
+
+  useEffect(() => {
+    track('view');
+  }, [path]);
 
   let page;
   if (path === '/guestbook') {
@@ -60,6 +65,11 @@ export default function App() {
 
   return (
     <>
+      {window.__PORTFOLIO_PREVIEW__ && (
+        <div className="fixed inset-x-0 top-0 z-[100] bg-amber-400 py-1 text-center font-mono text-[11px] font-semibold uppercase tracking-widest text-black">
+          Anteprima della bozza · non è ancora online
+        </div>
+      )}
       {page}
       {/* Global slide-up contact panel — reachable from the navbar/footer on any route. */}
       <GetInTouch />
