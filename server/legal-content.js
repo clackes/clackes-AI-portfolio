@@ -12,7 +12,7 @@ export const OWNER = {
   email: 'albertovergani267@gmail.com',
 };
 
-export const UPDATED = { en: '22 September 2026', it: '22 settembre 2026' };
+export const UPDATED = { en: '25 November 2026', it: '25 novembre 2026' };
 
 const privacyEn = [
   {
@@ -37,6 +37,7 @@ const privacyEn = [
       'That information is used to create an event on my Google Calendar and to let Google send the calendar invitation — including the Google Meet link — to your email address. Your details therefore end up stored in Google Calendar, and Google processes them as described in its own privacy policy.',
       'The legal basis is your request: you are asking me to arrange a meeting, so the processing is necessary to take steps at your request before any agreement.',
       'The event stays in my calendar as part of my meeting history. Ask me and I will delete it.',
+      'A copy of the same details (name, email, note, date, time, time zone and the Meet link) is also kept on my own server, so I can keep track of my calls in one place. Only I can see it. It stays until I remove it or you ask me to; at most the latest 500 bookings are kept.',
     ],
   },
   {
@@ -59,6 +60,14 @@ const privacyEn = [
     h: 'Storage in your browser',
     p: [
       'This site sets no cookies. It uses localStorage for exactly two things: your language preference, and the guestbook sign-in token described above. Both stay on your device and are never sent anywhere except, for the token, back to this site to verify who is posting.',
+    ],
+  },
+  {
+    h: 'Visit statistics',
+    p: [
+      'To know whether anyone actually reads this site, it counts visits on my own server, without cookies and without third-party analytics. When you open a page, your browser sends a small note saying which page it was and, if you arrived from another site, that site\'s domain. Clicks on a project\'s "Visit website" link are counted the same way.',
+      'For each day the server keeps only totals: number of page views, pages viewed, referring domains, country (as reported by Cloudflare), device type (phone or computer) and link clicks. To count people rather than page loads, it combines your IP address and browser identifier with a random key that changes every day and is never written to disk; neither your IP address nor that combination is saved. Nothing links one day to the next and no profile of you is built.',
+      'The legal basis is my legitimate interest in understanding how the site is used, with data that does not identify you. Daily totals are kept for about 13 months.',
     ],
   },
   {
@@ -124,6 +133,7 @@ const privacyIt = [
       'Questi dati servono a creare un evento sul mio Google Calendar e a far inviare da Google l\'invito — con il link Google Meet — al tuo indirizzo email. I tuoi dati finiscono quindi memorizzati in Google Calendar, e Google li tratta secondo la propria informativa privacy.',
       'La base giuridica è la tua richiesta: mi stai chiedendo di organizzare un incontro, quindi il trattamento è necessario per eseguire misure precontrattuali adottate su tua richiesta.',
       'L\'evento resta nel mio calendario come parte dello storico degli incontri. Se me lo chiedi, lo cancello.',
+      'Una copia degli stessi dati (nome, email, nota, data, ora, fuso orario e link Meet) resta anche sul mio server, così tengo traccia delle call in un posto solo. La vedo solo io. Resta finché non la cancello io o me lo chiedi tu; conservo al massimo le ultime 500 prenotazioni.',
     ],
   },
   {
@@ -146,6 +156,14 @@ const privacyIt = [
     h: 'Memoria del browser',
     p: [
       'Questo sito non imposta cookie. Usa il localStorage per esattamente due cose: la tua preferenza di lingua e il token di accesso al guestbook descritto sopra. Entrambi restano sul tuo dispositivo e non vengono inviati altrove, tranne il token che torna a questo sito per verificare chi sta scrivendo.',
+    ],
+  },
+  {
+    h: 'Statistiche delle visite',
+    p: [
+      'Per sapere se qualcuno legge davvero questo sito, le visite vengono contate sul mio server, senza cookie e senza analytics di terze parti. Quando apri una pagina, il tuo browser invia una piccola nota con la pagina aperta e, se arrivi da un altro sito, il dominio di quel sito. Allo stesso modo si contano i click sul link "Visita il sito" dei progetti.',
+      'Per ogni giorno il server conserva solo dei totali: numero di visualizzazioni, pagine viste, domini di provenienza, paese (come indicato da Cloudflare), tipo di dispositivo (telefono o computer) e click sui link. Per contare le persone e non i caricamenti di pagina, combina il tuo indirizzo IP e l\'identificativo del browser con una chiave casuale che cambia ogni giorno e non viene mai scritta su disco; né l\'IP né quella combinazione vengono salvati. Niente collega un giorno al successivo e non viene costruito alcun profilo.',
+      'La base giuridica è il mio legittimo interesse a capire come viene usato il sito, con dati che non ti identificano. I totali giornalieri restano per circa 13 mesi.',
     ],
   },
   {
